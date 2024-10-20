@@ -67,6 +67,10 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    implementation(libs.libsu.core)
+    implementation(libs.libsu.service)
+    implementation(libs.libsu.nio)
 }
 
 fun ApkSigningConfig.checkExternalSigningConfig(): Boolean {
