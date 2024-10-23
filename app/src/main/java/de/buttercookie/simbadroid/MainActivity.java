@@ -8,6 +8,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -18,7 +19,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        findViewById(R.id.start_service).setOnClickListener(this);
+        findViewById(R.id.stop_service).setOnClickListener(this);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ActivityResultLauncher<String> requestPermissionLauncher =
                     registerForActivityResult(new ActivityResultContracts.RequestPermission(),
@@ -40,6 +44,15 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
             }
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.start_service) {
+
+        } else if (v.getId() == R.id.stop_service) {
+
         }
     }
 }
