@@ -5,9 +5,13 @@
 package de.buttercookie.simbadroid;
 
 import android.Manifest;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
@@ -19,7 +23,26 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import de.buttercookie.simbadroid.service.SmbService;
+import de.buttercookie.simbadroid.service.SmbServiceConnection;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    private SmbService mService;
+    private boolean mBound = false;
+    private final SmbServiceConnection mSmbSrvConn = new SmbServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            super.onServiceConnected(name, service);
+            mService = getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            super.onServiceDisconnected(name);
+            mBound = false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +71,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (mBound) {
+            unbindService(mSmbSrvConn);
+            mBound = false;
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         if (v.getId() == R.id.start_service) {
-
+            Intent intent = new Intent(this, SmbService.class);
+            bindService(intent, mSmbSrvConn, Context.BIND_AUTO_CREATE);
         } else if (v.getId() == R.id.stop_service) {
-
+            if (mBound) {
+                unbindService(mSmbSrvConn);
+                mBound = false;
+            }
         }
     }
 }
