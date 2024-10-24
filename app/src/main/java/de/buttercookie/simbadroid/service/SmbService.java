@@ -25,4 +25,9 @@ public class SmbService extends Service {
     public IBinder onBind(Intent intent) {
         return binder;
     }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_NOT_STICKY;
+    }
 }

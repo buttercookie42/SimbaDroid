@@ -71,25 +71,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        Intent intent = new Intent(this, SmbService.class);
+        bindService(intent, mSmbSrvConn, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
 
-        if (mBound) {
-            unbindService(mSmbSrvConn);
-            mBound = false;
-        }
+        unbindService(mSmbSrvConn);
+        mBound = false;
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.start_service) {
             Intent intent = new Intent(this, SmbService.class);
-            bindService(intent, mSmbSrvConn, Context.BIND_AUTO_CREATE);
+            startService(intent);
         } else if (v.getId() == R.id.stop_service) {
-            if (mBound) {
-                unbindService(mSmbSrvConn);
-                mBound = false;
-            }
+            Intent intent = new Intent(this, SmbService.class);
+            stopService(intent);
         }
     }
 }
