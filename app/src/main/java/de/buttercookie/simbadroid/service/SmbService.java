@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.ServiceCompat;
 
+import com.topjohnwu.superuser.Shell;
 import de.buttercookie.simbadroid.R;
 
 public class SmbService extends Service {
@@ -33,6 +34,11 @@ public class SmbService extends Service {
         SmbService getService() {
             return SmbService.this;
         }
+    }
+
+    static {
+        Shell.setDefaultBuilder(Shell.Builder.create()
+                .setFlags(Shell.FLAG_MOUNT_MASTER));
     }
 
     @Override
