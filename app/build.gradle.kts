@@ -37,6 +37,13 @@ android {
             )
         }
     }
+    packaging {
+        resources {
+            excludes.add("META-INF/AL2.0")
+            excludes.add("META-INF/LGPL2.1")
+            excludes.add("com/sun/jna/**")
+        }
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -71,6 +78,10 @@ dependencies {
     implementation(libs.libsu.core)
     implementation(libs.libsu.service)
     implementation(libs.libsu.nio)
+    implementation(libs.jfileserver) {
+        // Hazlecast is only needed for clustering and not compatible with Android anyway
+        exclude(group = "com.hazelcast", module = "hazelcast")
+    }
 }
 
 fun ApkSigningConfig.checkExternalSigningConfig(): Boolean {
