@@ -63,6 +63,11 @@ public class SmbService extends Service {
         return START_NOT_STICKY;
     }
 
+    public void stop() {
+        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
+        stopSelf();
+    }
+
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String name = "SMB Server";

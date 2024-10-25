@@ -18,7 +18,6 @@ import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ServiceCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -93,9 +92,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(this, SmbService.class);
             startService(intent);
         } else if (v.getId() == R.id.stop_service) {
-            Intent intent = new Intent(this, SmbService.class);
-            stopService(intent);
-            ServiceCompat.stopForeground(mService, ServiceCompat.STOP_FOREGROUND_REMOVE);
+            if (mBound) {
+                mService.stop();
+            }
         }
     }
 }
