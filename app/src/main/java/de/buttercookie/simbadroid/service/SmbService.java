@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.ServiceInfo;
@@ -20,6 +21,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.ServiceCompat;
 
 import com.topjohnwu.superuser.Shell;
+import de.buttercookie.simbadroid.MainActivity;
 import de.buttercookie.simbadroid.R;
 
 public class SmbService extends Service {
@@ -56,10 +58,14 @@ public class SmbService extends Service {
     @SuppressLint("InlinedApi")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Intent activityIntent = new Intent(getApplicationContext(), MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
+                activityIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText("The SMB server is running.")
+                .setContentIntent(pendingIntent)
                 .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
                 .setOngoing(true)
                 .build();
