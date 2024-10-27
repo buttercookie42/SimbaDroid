@@ -109,6 +109,19 @@ public class PermissionBlock {
     }
 
     /**
+     * Always execute the specified runnable regardless of success or failure, e.g. for treating
+     * the notification permission as an optional permission.
+     */
+    public void alwaysRun(final @NonNull Runnable onPermissionsHandled) {
+        if (mOnPermissionsDenied != null) {
+            throw new IllegalStateException("Do not specify a separate fallback runnable when using alwaysRun()");
+        }
+
+        mOnPermissionsDenied = onPermissionsHandled;
+        run(onPermissionsHandled);
+    }
+
+    /**
      * Execute this fallback if at least one permission has not been granted.
      */
     public PermissionBlock andFallback(final @NonNull Runnable onPermissionsDenied) {

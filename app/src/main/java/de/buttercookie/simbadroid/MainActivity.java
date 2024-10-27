@@ -80,8 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 Permissions.from(this)
                         .withPermissions(Manifest.permission.POST_NOTIFICATIONS)
-                        .andFallback(() -> { startService(intent); })
-                        .run(() -> { startService(intent); });
+                        .alwaysRun(() -> { startService(intent); });
             } else {
                 startService(intent);
             }
