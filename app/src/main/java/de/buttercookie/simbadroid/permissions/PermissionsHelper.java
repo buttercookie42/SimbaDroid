@@ -6,10 +6,14 @@
 
 package de.buttercookie.simbadroid.permissions;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Environment;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -18,7 +22,7 @@ import androidx.core.content.ContextCompat;
 
     public boolean hasPermissions(final Context context, final String... permissions) {
         for (String permission : permissions) {
-            final int permissionCheck = ContextCompat.checkSelfPermission(context, permission);
+            final int permissionCheck = checkSelfPermission(context, permission);
 
             if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
                 return false;
@@ -26,6 +30,18 @@ import androidx.core.content.ContextCompat;
         }
 
         return true;
+    }
+
+    private static int checkSelfPermission(final @NonNull Context context,
+                                           final @NonNull String permission) {
+        if (Manifest.permission.MANAGE_EXTERNAL_STORAGE.equals(permission)) {
+            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
+                    Environment.isExternalStorageManager()
+                    ? PackageManager.PERMISSION_GRANTED
+                    : PackageManager.PERMISSION_DENIED;
+        } else {
+            return ContextCompat.checkSelfPermission(context, permission);
+        }
     }
 
     public void prompt(final Activity activity, final String[] permissions) {
