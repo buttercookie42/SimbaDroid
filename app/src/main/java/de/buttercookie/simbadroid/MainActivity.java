@@ -8,21 +8,19 @@ import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import de.buttercookie.simbadroid.permissions.Permissions;
 import de.buttercookie.simbadroid.service.SmbService;
 import de.buttercookie.simbadroid.service.SmbServiceConnection;
 
@@ -59,14 +57,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.stop_service).setOnClickListener(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            ActivityResultLauncher<String> requestPermissionLauncher =
-                    registerForActivityResult(new ActivityResultContracts.RequestPermission(),
-                            isGranted -> {});
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
-                    PackageManager.PERMISSION_GRANTED) {
-            } else {
-                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
-            }
+            Permissions.from(this)
+                    .withPermissions(Manifest.permission.POST_NOTIFICATIONS)
+                    .run();
         }
     }
 
@@ -96,5 +89,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mService.stop();
             }
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Permissions.onRequestPermissionsResult(this, permissions, grantResults);
     }
 }
