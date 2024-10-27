@@ -5,10 +5,10 @@
 package de.buttercookie.simbadroid;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
@@ -73,17 +73,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBound = false;
     }
 
+    @SuppressLint("InlinedApi")
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.start_service) {
             Intent intent = new Intent(this, SmbService.class);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                Permissions.from(this)
-                        .withPermissions(Manifest.permission.POST_NOTIFICATIONS)
-                        .alwaysRun(() -> { startService(intent); });
-            } else {
-                startService(intent);
-            }
+            Permissions.from(this)
+                    .withPermissions(Manifest.permission.POST_NOTIFICATIONS)
+                    .alwaysRun(() -> { startService(intent); });
         } else if (v.getId() == R.id.stop_service) {
             if (mBound) {
                 mService.stop();
