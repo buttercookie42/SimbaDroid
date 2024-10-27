@@ -55,12 +55,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         findViewById(R.id.start_service).setOnClickListener(this);
         findViewById(R.id.stop_service).setOnClickListener(this);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            Permissions.from(this)
-                    .withPermissions(Manifest.permission.POST_NOTIFICATIONS)
-                    .run();
-        }
     }
 
     @Override
@@ -83,7 +77,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         if (v.getId() == R.id.start_service) {
             Intent intent = new Intent(this, SmbService.class);
-            startService(intent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Permissions.from(this)
+                        .withPermissions(Manifest.permission.POST_NOTIFICATIONS)
+                        .andFallback(() -> { startService(intent); })
+                        .run(() -> { startService(intent); });
+            } else {
+                startService(intent);
+            }
         } else if (v.getId() == R.id.stop_service) {
             if (mBound) {
                 mService.stop();
