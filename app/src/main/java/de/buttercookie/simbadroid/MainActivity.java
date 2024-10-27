@@ -9,9 +9,11 @@ import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -80,7 +82,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(this, SmbService.class);
             Permissions.from(this)
                     .withPermissions(Manifest.permission.POST_NOTIFICATIONS)
-                    .alwaysRun(() -> { startService(intent); });
+                    .alwaysRun(() -> {
+                        String storagePermission =
+                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ?
+                                        Manifest.permission.MANAGE_EXTERNAL_STORAGE :
+                                        Manifest.permission.WRITE_EXTERNAL_STORAGE;
+                        Permissions.from(this)
+                                .withPermissions(storagePermission)
+                                .andFallback(() -> Toast.makeText(this,
+                                        "Manage storage permission required",
+                                        Toast.LENGTH_SHORT).show())
+                                .run(() -> startService(intent));
+                    });
         } else if (v.getId() == R.id.stop_service) {
             if (mBound) {
                 mService.stop();
