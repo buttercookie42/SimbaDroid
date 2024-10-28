@@ -8,6 +8,7 @@ package de.buttercookie.simbadroid.permissions;
 
 import de.buttercookie.simbadroid.util.ThreadUtils;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 
@@ -34,8 +35,18 @@ public class PermissionBlock {
 
     /**
      * Determine whether the app has been granted the specified permissions.
+     * <p>
+     * Note: The MANAGE_EXTERNAL_STORAGE permission cannot be requested together with other
+     * permissions.
      */
     public PermissionBlock withPermissions(final @NonNull String... permissions) {
+        if (permissions.length > 1) {
+            for (String permission : permissions) {
+                if (Manifest.permission.MANAGE_EXTERNAL_STORAGE.equals(permission)) {
+                    throw new IllegalStateException("MANAGE_EXTERNAL_STORAGE must be requested alone");
+                }
+            }
+        }
         mPermissions = permissions;
         return this;
     }

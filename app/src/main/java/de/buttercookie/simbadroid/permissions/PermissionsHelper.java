@@ -9,9 +9,12 @@ package de.buttercookie.simbadroid.permissions;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -45,7 +48,29 @@ import androidx.core.content.ContextCompat;
     }
 
     public void prompt(final Activity activity, final String[] permissions) {
-        ActivityCompat.requestPermissions(activity, permissions, PERMISSIONS_REQUEST_CODE);
+        if (permissions.length == 1 &&
+                Manifest.permission.MANAGE_EXTERNAL_STORAGE.equals(permissions[0])) {
+            requestManageExternalStoragePermission(activity);
+        } else {
+            ActivityCompat.requestPermissions(activity, permissions, PERMISSIONS_REQUEST_CODE);
+        }
     }
 
+    private void requestManageExternalStoragePermission(final Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
+                !Environment.isExternalStorageManager()) {
+            try {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                intent.addCategory(Intent.CATEGORY_DEFAULT);
+                intent.setData(Uri.parse(String.format("package:%s",
+                        activity.getApplicationContext().getPackageName())));
+                activity.startActivityForResult(intent,
+                        Permissions.ACTIVITY_MANAGE_STORAGE_RESULT_CODE);
+            } catch (Exception e) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                activity.startActivityForResult(intent,
+                        Permissions.ACTIVITY_MANAGE_STORAGE_RESULT_CODE);
+            }
+        }
+    }
 }

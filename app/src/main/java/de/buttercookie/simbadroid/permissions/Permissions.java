@@ -6,9 +6,12 @@
 
 package de.buttercookie.simbadroid.permissions;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Environment;
 
 import androidx.annotation.NonNull;
 
@@ -43,6 +46,8 @@ import java.util.concurrent.FutureTask;
  * if a permissions prompt is required.
  */
 public class Permissions {
+    public static final int ACTIVITY_MANAGE_STORAGE_RESULT_CODE = 27294;
+
     private static final Queue<PermissionBlock> waiting = new LinkedList<>();
     private static final Queue<PermissionBlock> prompt = new LinkedList<>();
 
@@ -116,6 +121,22 @@ public class Permissions {
         processGrantResults(permissions, grantResults);
 
         processQueue(activity, permissions, grantResults);
+    }
+
+    /**
+     * Callback for Activity.onActivityResult(). All activities that prompt for the MANAGE_EXTERNAL_STORAGE
+     * permission using this class should implement onActivityResult() and call this class if the
+     * request code is Permissions.ACTIVITY_MANAGE_STORAGE_RESULT_CODE.
+     */
+    public static void onManageStorageActivityResult(final @NonNull Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            String[] permission = {Manifest.permission.MANAGE_EXTERNAL_STORAGE};
+            int[] granted = {Environment.isExternalStorageManager() ?
+                    PackageManager.PERMISSION_GRANTED :
+                    PackageManager.PERMISSION_DENIED};
+            Permissions.onRequestPermissionsResult(
+                    activity, permission, granted);
+        }
     }
 
     /* package-private */ static synchronized void prompt(final Activity activity,
