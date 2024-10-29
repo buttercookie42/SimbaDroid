@@ -21,3 +21,7 @@
 #-renamesourcefileattribute SourceFile
 
 -dontobfuscate
+
+# JLANFileServer reflection usage from configuration file
+-keep class org.filesys.debug.ConsoleDebug { public *; }
+-keep class org.bouncycastle.jce.provider.BouncyCastleProvider { public *; }
