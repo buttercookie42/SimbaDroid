@@ -26,6 +26,7 @@ import androidx.core.view.WindowInsetsCompat;
 import de.buttercookie.simbadroid.permissions.Permissions;
 import de.buttercookie.simbadroid.service.SmbService;
 import de.buttercookie.simbadroid.service.SmbServiceConnection;
+import de.buttercookie.simbadroid.util.ThreadUtils;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private SmbService mService;
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(this, SmbService.class);
             Permissions.from(this)
                     .withPermissions(Manifest.permission.POST_NOTIFICATIONS)
-                    .alwaysRun(() -> {
+                    .alwaysRun(() -> ThreadUtils.postToUiThread(() -> {
                         String storagePermission =
                                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ?
                                         Manifest.permission.MANAGE_EXTERNAL_STORAGE :
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         "Manage storage permission required",
                                         Toast.LENGTH_SHORT).show())
                                 .run(() -> startService(intent));
-                    });
+                    }));
         } else if (v.getId() == R.id.stop_service) {
             if (mBound) {
                 mService.stop();
