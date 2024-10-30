@@ -41,6 +41,7 @@ android {
         resources {
             excludes.add("META-INF/AL2.0")
             excludes.add("META-INF/LGPL2.1")
+            excludes.add("org/bouncycastle/pqc/crypto/picnic/*")
             excludes.add("com/sun/jna/**")
         }
     }
@@ -81,7 +82,10 @@ dependencies {
     implementation(libs.jfileserver) {
         // Hazlecast is only needed for clustering and not compatible with Android anyway
         exclude(group = "com.hazelcast", module = "hazelcast")
+        // We specify our own explicit Bouncy Castle dependency
+        exclude(group = "org.bouncycastle", module = "bcprov-jdk15on")
     }
+    implementation(libs.bouncycastle.bcprov)
 }
 
 fun ApkSigningConfig.checkExternalSigningConfig(): Boolean {

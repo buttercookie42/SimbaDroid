@@ -10,6 +10,7 @@ constraintlayout = "2.2.0"
 extprops = "2.0.1"
 supersu = "6.0.0"
 jfileserver = "1.4.0"
+bouncycastle = "1.78.1"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -23,6 +24,7 @@ libsu-core = { group = "com.github.topjohnwu.libsu", name = "core", version.ref 
 libsu-service = { group = "com.github.topjohnwu.libsu", name = "service", version.ref = "supersu" }
 libsu-nio = { group = "com.github.topjohnwu.libsu", name = "nio", version.ref = "supersu" }
 jfileserver = { group = "org.filesys", name = "jfileserver", version.ref = "jfileserver"}
+bouncycastle-bcprov = { group = "org.bouncycastle", name = "bcprov-jdk15to18", version.ref = "bouncycastle" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
