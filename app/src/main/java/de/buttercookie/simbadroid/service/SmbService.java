@@ -12,9 +12,11 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.ServiceInfo;
+import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.PowerManager;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -38,6 +40,9 @@ public class SmbService extends Service {
         }
     }
 
+    private PowerManager.WakeLock mWakeLock;
+    private WifiManager.WifiLock mWifiLock;
+
     static {
         Shell.setDefaultBuilder(Shell.Builder.create()
                 .setFlags(Shell.FLAG_MOUNT_MASTER));
@@ -47,6 +52,7 @@ public class SmbService extends Service {
     public void onCreate() {
         super.onCreate();
         createNotificationChannel();
+        initLocks();
     }
 
     @Nullable
@@ -71,6 +77,7 @@ public class SmbService extends Service {
                 .build();
         ServiceCompat.startForeground(this, NOTIFICATION_ID, notification,
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST);
+        acquireLocks();
 
         Shell.cmd("iptables  -t nat -A PREROUTING -p tcp --dport 445 -j REDIRECT --to-port 4450").exec();
         Shell.cmd("iptables  -t nat -A PREROUTING -p udp --dport 137 -j REDIRECT --to-port 1137").exec();
@@ -87,7 +94,30 @@ public class SmbService extends Service {
         Shell.cmd("iptables  -t nat -D PREROUTING -p tcp --dport 139 -j REDIRECT --to-port 1139").exec();
 
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
+        releaseLocks();
         stopSelf();
+    }
+
+    @SuppressWarnings("deprecation")
+    private void initLocks() {
+        final String tag = getString(R.string.app_name) + "::SmbService";
+
+        PowerManager pwrMgr = getSystemService(PowerManager.class);
+        mWakeLock = pwrMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, tag);
+
+        WifiManager wifiMgr = getSystemService(WifiManager.class);
+        mWifiLock = wifiMgr.createWifiLock(WifiManager.WIFI_MODE_FULL, tag);
+    }
+
+    @SuppressLint("WakelockTimeout")
+    private void acquireLocks() {
+        mWakeLock.acquire();
+        mWifiLock.acquire();
+    }
+
+    private void releaseLocks() {
+        mWakeLock.release();
+        mWifiLock.release();
     }
 
     private void createNotificationChannel() {
