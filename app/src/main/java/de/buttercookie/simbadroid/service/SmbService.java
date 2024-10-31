@@ -25,6 +25,7 @@ import androidx.core.app.ServiceCompat;
 import com.topjohnwu.superuser.Shell;
 import de.buttercookie.simbadroid.MainActivity;
 import de.buttercookie.simbadroid.R;
+import de.buttercookie.simbadroid.jlan.JLANFileServer;
 
 public class SmbService extends Service {
     private static final String LOGTAG = "SmbService";
@@ -40,6 +41,7 @@ public class SmbService extends Service {
         }
     }
 
+    private JLANFileServer mServer;
     private PowerManager.WakeLock mWakeLock;
     private WifiManager.WifiLock mWifiLock;
 
@@ -64,6 +66,12 @@ public class SmbService extends Service {
     @SuppressLint("InlinedApi")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        try {
+            mServer = new JLANFileServer(this);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         Intent activityIntent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
                 activityIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -84,10 +92,16 @@ public class SmbService extends Service {
         Shell.cmd("iptables  -t nat -A PREROUTING -p udp --dport 138 -j REDIRECT --to-port 1138").exec();
         Shell.cmd("iptables  -t nat -A PREROUTING -p tcp --dport 139 -j REDIRECT --to-port 1139").exec();
 
+        mServer.start();
+
         return START_NOT_STICKY;
     }
 
     public void stop() {
+        if (mServer != null) {
+            mServer.stop();
+        }
+
         Shell.cmd("iptables  -t nat -D PREROUTING -p tcp --dport 445 -j REDIRECT --to-port 4450").exec();
         Shell.cmd("iptables  -t nat -D PREROUTING -p udp --dport 137 -j REDIRECT --to-port 1137").exec();
         Shell.cmd("iptables  -t nat -D PREROUTING -p udp --dport 138 -j REDIRECT --to-port 1138").exec();
