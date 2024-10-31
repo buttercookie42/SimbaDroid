@@ -25,3 +25,5 @@
 # JLANFileServer reflection usage from configuration file
 -keep class org.filesys.debug.ConsoleDebug { public *; }
 -keep class org.bouncycastle.jce.provider.BouncyCastleProvider { public *; }
+# more JLANFileServer classes that need to be kept
+-keep class org.filesys.smb.server.*Handler { *; }
