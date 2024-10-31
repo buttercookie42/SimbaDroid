@@ -73,12 +73,18 @@ public class SmbService extends Service {
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST);
 
         Shell.cmd("iptables  -t nat -A PREROUTING -p tcp --dport 445 -j REDIRECT --to-port 4450").exec();
+        Shell.cmd("iptables  -t nat -A PREROUTING -p udp --dport 137 -j REDIRECT --to-port 1137").exec();
+        Shell.cmd("iptables  -t nat -A PREROUTING -p udp --dport 138 -j REDIRECT --to-port 1138").exec();
+        Shell.cmd("iptables  -t nat -A PREROUTING -p tcp --dport 139 -j REDIRECT --to-port 1139").exec();
 
         return START_NOT_STICKY;
     }
 
     public void stop() {
         Shell.cmd("iptables  -t nat -D PREROUTING -p tcp --dport 445 -j REDIRECT --to-port 4450").exec();
+        Shell.cmd("iptables  -t nat -D PREROUTING -p udp --dport 137 -j REDIRECT --to-port 1137").exec();
+        Shell.cmd("iptables  -t nat -D PREROUTING -p udp --dport 138 -j REDIRECT --to-port 1138").exec();
+        Shell.cmd("iptables  -t nat -D PREROUTING -p tcp --dport 139 -j REDIRECT --to-port 1139").exec();
 
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
         stopSelf();
