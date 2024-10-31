@@ -41,6 +41,8 @@ public class SmbService extends Service {
         }
     }
 
+    private boolean mRunning = false;
+
     private JLANFileServer mServer;
     private PowerManager.WakeLock mWakeLock;
     private WifiManager.WifiLock mWifiLock;
@@ -94,10 +96,15 @@ public class SmbService extends Service {
 
         mServer.start();
 
+        mRunning = true;
         return START_NOT_STICKY;
     }
 
     public void stop() {
+        if (!mRunning) {
+            return;
+        }
+
         if (mServer != null) {
             mServer.stop();
         }
@@ -110,6 +117,7 @@ public class SmbService extends Service {
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
         releaseLocks();
         stopSelf();
+        mRunning = false;
     }
 
     @SuppressWarnings("deprecation")
