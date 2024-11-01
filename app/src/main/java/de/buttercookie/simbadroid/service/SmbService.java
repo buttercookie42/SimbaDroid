@@ -89,6 +89,7 @@ public class SmbService extends Service {
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST);
         acquireLocks();
 
+        // TODO: Check if rules already exist in iptables
         Shell.cmd("iptables  -t nat -A PREROUTING -p tcp --dport 445 -j REDIRECT --to-port 4450").exec();
         Shell.cmd("iptables  -t nat -A PREROUTING -p udp --dport 137 -j REDIRECT --to-port 1137").exec();
         Shell.cmd("iptables  -t nat -A PREROUTING -p udp --dport 138 -j REDIRECT --to-port 1138").exec();
