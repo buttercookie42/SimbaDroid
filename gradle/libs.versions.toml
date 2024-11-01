@@ -9,7 +9,7 @@ activity = "1.9.3"
 constraintlayout = "2.2.0"
 extprops = "2.0.1"
 supersu = "6.0.0"
-jfileserver = "1.4.0"
+jfileserver = "1.4.1-SNAPSHOT"
 bouncycastle = "1.78.1"
 
 [libraries]
