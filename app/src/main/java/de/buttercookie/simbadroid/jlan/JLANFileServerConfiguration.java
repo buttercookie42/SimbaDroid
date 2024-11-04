@@ -5,6 +5,7 @@
 package de.buttercookie.simbadroid.jlan;
 
 import android.content.Context;
+import android.os.Environment;
 
 import org.filesys.debug.DebugConfigSection;
 import org.filesys.server.SrvSession;
@@ -36,7 +37,6 @@ import de.buttercookie.simbadroid.util.FileUtils;
 
 public class JLANFileServerConfiguration extends ServerConfiguration {
     private static final String HOSTNAME = "JLANHOST";
-    private static final String SHARENAME = "JLANSHARE";
 
     private static final int DefaultThreadPoolInit = 6;
     private static final int DefaultThreadPoolMax = 6;
@@ -80,22 +80,10 @@ public class JLANFileServerConfiguration extends ServerConfiguration {
         // Shares
         FilesystemsConfigSection filesysConfig = new FilesystemsConfigSection(this);
         DiskInterface diskInterface = new JavaNIODiskDriver();
-        final GenericConfigElement driverConfig = new GenericConfigElement("driver");
-        final GenericConfigElement localPathConfig = new GenericConfigElement("LocalPath");
-        localPathConfig.setValue(FileUtils.getStoragePath(context));
-        driverConfig.addChild(localPathConfig);
-        DiskDeviceContext diskDeviceContext =
-                (DiskDeviceContext) diskInterface.createContext(SHARENAME, driverConfig);
-        diskDeviceContext.setShareName(SHARENAME);
-        diskDeviceContext.setConfigurationParameters(driverConfig);
-        diskDeviceContext.enableChangeHandler(false);
-        diskDeviceContext.setDiskInformation(
-                new SrvDiskInfo(2560000, 64, 512, 2304000));
-        DiskSharedDevice diskDev = new DiskSharedDevice(SHARENAME, diskInterface, diskDeviceContext);
-        diskDev.setConfiguration(this);
-        diskDev.setAccessControlList(secConfig.getGlobalAccessControls());
-        diskDeviceContext.startFilesystem(diskDev);
-        filesysConfig.addShare(diskDev);
+        addShare(diskInterface, this, filesysConfig, secConfig,
+                "External", FileUtils.getStoragePath(context));
+        addShare(diskInterface, this, filesysConfig, secConfig,
+                "Internal", Environment.getExternalStorageDirectory().toString());
 
         // SMB
         SMBConfigSection smbConfig = new SMBConfigSection(this);
@@ -126,4 +114,29 @@ public class JLANFileServerConfiguration extends ServerConfiguration {
         smbConfig.setHostAnnounceDebug(false);
         smbConfig.setSessionDebugFlags(EnumSet.noneOf(SMBSrvSession.Dbg.class));
     }
+
+    private static void addShare(DiskInterface diskInterface,
+                                 ServerConfiguration serverConfig,
+                                 FilesystemsConfigSection filesysConfig,
+                                 SecurityConfigSection secConfig,
+                                 String shareName, String sharePath)
+            throws DeviceContextException {
+        final GenericConfigElement driverConfig = new GenericConfigElement("driver");
+        final GenericConfigElement localPathConfig = new GenericConfigElement("LocalPath");
+        localPathConfig.setValue(sharePath);
+        driverConfig.addChild(localPathConfig);
+        DiskDeviceContext diskDeviceContext =
+                (DiskDeviceContext) diskInterface.createContext(shareName, driverConfig);
+        diskDeviceContext.setShareName(shareName);
+        diskDeviceContext.setConfigurationParameters(driverConfig);
+        diskDeviceContext.enableChangeHandler(false);
+        diskDeviceContext.setDiskInformation(
+                new SrvDiskInfo(2560000, 64, 512, 2304000));
+        DiskSharedDevice diskDev = new DiskSharedDevice(shareName, diskInterface, diskDeviceContext);
+        diskDev.setConfiguration(serverConfig);
+        diskDev.setAccessControlList(secConfig.getGlobalAccessControls());
+        diskDeviceContext.startFilesystem(diskDev);
+        filesysConfig.addShare(diskDev);
+    }
+
 }
