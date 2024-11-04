@@ -1,12 +1,12 @@
 [versions]
-agp = "8.7.1"
+agp = "8.7.2"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
 material = "1.12.0"
 activity = "1.9.3"
-constraintlayout = "2.1.4"
+constraintlayout = "2.2.0"
 extprops = "2.0.1"
 supersu = "6.0.0"
 
