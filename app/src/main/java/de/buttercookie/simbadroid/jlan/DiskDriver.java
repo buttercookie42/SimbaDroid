@@ -4,6 +4,8 @@
 
 package de.buttercookie.simbadroid.jlan;
 
+import android.os.StatFs;
+
 import org.filesys.server.filesys.DiskDeviceContext;
 import org.filesys.server.filesys.DiskSizeInterface;
 import org.filesys.server.filesys.SrvDiskInfo;
@@ -12,12 +14,15 @@ import org.filesys.smb.server.disk.JavaNIODiskDriver;
 import java.io.IOException;
 
 public class DiskDriver extends JavaNIODiskDriver implements DiskSizeInterface {
+    private static final int BLOCK_SIZE = 512;
 
     @Override
     public void getDiskInformation(DiskDeviceContext ctx, SrvDiskInfo diskDev) throws IOException {
-        diskDev.setBlockSize(512);
-        diskDev.setBlocksPerAllocationUnit(64);
-        diskDev.setTotalUnits(2560000);
-        diskDev.setFreeUnits(2304000);
+        StatFs statFs = new StatFs(ctx.getDeviceName());
+
+        diskDev.setBlockSize(BLOCK_SIZE);
+        diskDev.setBlocksPerAllocationUnit(statFs.getBlockSizeLong() / BLOCK_SIZE);
+        diskDev.setTotalUnits(statFs.getBlockCountLong());
+        diskDev.setFreeUnits(statFs.getAvailableBlocksLong());
     }
 }
