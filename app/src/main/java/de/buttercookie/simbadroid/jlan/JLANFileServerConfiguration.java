@@ -25,10 +25,8 @@ import org.filesys.server.filesys.DiskDeviceContext;
 import org.filesys.server.filesys.DiskInterface;
 import org.filesys.server.filesys.DiskSharedDevice;
 import org.filesys.server.filesys.FilesystemsConfigSection;
-import org.filesys.server.filesys.SrvDiskInfo;
 import org.filesys.smb.server.SMBConfigSection;
 import org.filesys.smb.server.SMBSrvSession;
-import org.filesys.smb.server.disk.JavaNIODiskDriver;
 import org.springframework.extensions.config.element.GenericConfigElement;
 
 import java.util.EnumSet;
@@ -79,7 +77,7 @@ public class JLANFileServerConfiguration extends ServerConfiguration {
 
         // Shares
         FilesystemsConfigSection filesysConfig = new FilesystemsConfigSection(this);
-        DiskInterface diskInterface = new JavaNIODiskDriver();
+        DiskInterface diskInterface = new DiskDriver();
         addShare(diskInterface, this, filesysConfig, secConfig,
                 "External", FileUtils.getStoragePath(context));
         addShare(diskInterface, this, filesysConfig, secConfig,
@@ -130,8 +128,6 @@ public class JLANFileServerConfiguration extends ServerConfiguration {
         diskDeviceContext.setShareName(shareName);
         diskDeviceContext.setConfigurationParameters(driverConfig);
         diskDeviceContext.enableChangeHandler(false);
-        diskDeviceContext.setDiskInformation(
-                new SrvDiskInfo(2560000, 64, 512, 2304000));
         DiskSharedDevice diskDev = new DiskSharedDevice(shareName, diskInterface, diskDeviceContext);
         diskDev.setConfiguration(serverConfig);
         diskDev.setAccessControlList(secConfig.getGlobalAccessControls());
