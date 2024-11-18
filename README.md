@@ -9,12 +9,14 @@ with anything else.)
 
 ## Licenses
 
-SimbaDroid is © Jan Henning, 2024 and is provided under the Mozilla Public License 2.0
+SimbaDroid is © Jan Henning, 2024 and is mostly provided under the Mozilla Public License 2.0
 (see LICENSE.md)
+
+Portions of the code are provided under the Apache License, Version 2.0 (see apache-2.0.txt)
 
 _JFileServer_ is used under the LGPL-3.0 license (see lgpl-3.0.md and gpl-3.0.md)
 
-_libsu_ is used under the Apache License, Version 2.0  (see apache-2.0.txt)
+_libsu_ is used under the Apache License, Version 2.0
 
 _Bouncy Castle_ is used under the following license:
 

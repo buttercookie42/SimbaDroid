@@ -4,6 +4,8 @@
 
 package de.buttercookie.simbadroid.service;
 
+import static de.buttercookie.simbadroid.util.Iptables.iptables;
+
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -22,7 +24,6 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.ServiceCompat;
 
-import com.topjohnwu.superuser.Shell;
 import de.buttercookie.simbadroid.MainActivity;
 import de.buttercookie.simbadroid.R;
 import de.buttercookie.simbadroid.jlan.JLANFileServer;
@@ -84,11 +85,10 @@ public class SmbService extends Service {
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST);
         acquireLocks();
 
-        // TODO: Check if rules already exist in iptables
-        Shell.cmd("iptables  -t nat -A PREROUTING -p tcp --dport 445 -j REDIRECT --to-port 4450").exec();
-        Shell.cmd("iptables  -t nat -A PREROUTING -p udp --dport 137 -j REDIRECT --to-port 1137").exec();
-        Shell.cmd("iptables  -t nat -A PREROUTING -p udp --dport 138 -j REDIRECT --to-port 1138").exec();
-        Shell.cmd("iptables  -t nat -A PREROUTING -p tcp --dport 139 -j REDIRECT --to-port 1139").exec();
+        iptables(false, "nat", "A", "PREROUTING -p tcp --dport 445 -j REDIRECT --to-port 4450");
+        iptables(false, "nat", "A", "PREROUTING -p udp --dport 137 -j REDIRECT --to-port 1137");
+        iptables(false, "nat", "A", "PREROUTING -p udp --dport 138 -j REDIRECT --to-port 1138");
+        iptables(false, "nat", "A", "PREROUTING -p tcp --dport 139 -j REDIRECT --to-port 1139");
 
         mServer.start();
 
@@ -105,10 +105,10 @@ public class SmbService extends Service {
             mServer.stop();
         }
 
-        Shell.cmd("iptables  -t nat -D PREROUTING -p tcp --dport 445 -j REDIRECT --to-port 4450").exec();
-        Shell.cmd("iptables  -t nat -D PREROUTING -p udp --dport 137 -j REDIRECT --to-port 1137").exec();
-        Shell.cmd("iptables  -t nat -D PREROUTING -p udp --dport 138 -j REDIRECT --to-port 1138").exec();
-        Shell.cmd("iptables  -t nat -D PREROUTING -p tcp --dport 139 -j REDIRECT --to-port 1139").exec();
+        iptables(false, "nat", "D", "PREROUTING -p tcp --dport 445 -j REDIRECT --to-port 4450");
+        iptables(false, "nat", "D", "PREROUTING -p udp --dport 137 -j REDIRECT --to-port 1137");
+        iptables(false, "nat", "D", "PREROUTING -p udp --dport 138 -j REDIRECT --to-port 1138");
+        iptables(false, "nat", "D", "PREROUTING -p tcp --dport 139 -j REDIRECT --to-port 1139");
 
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
         releaseLocks();
