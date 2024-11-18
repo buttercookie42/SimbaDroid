@@ -47,11 +47,6 @@ public class SmbService extends Service {
     private PowerManager.WakeLock mWakeLock;
     private WifiManager.WifiLock mWifiLock;
 
-    static {
-        Shell.setDefaultBuilder(Shell.Builder.create()
-                .setFlags(Shell.FLAG_MOUNT_MASTER));
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
