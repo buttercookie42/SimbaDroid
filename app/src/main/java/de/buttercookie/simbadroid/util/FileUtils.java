@@ -32,7 +32,7 @@ public class FileUtils {
      *             may be used to filter down the selection of available non-emulated storage
      *             devices. If no storage device matching the given UUID was found, the first
      *             non-emulated storage device will be returned.
-     * @return The root path of the storage device.
+     * @return The root path of the storage device, or <code>null</code> if none could be found.
      */
     // Imported from https://hg.mozilla.org/releases/mozilla-esr68/file/bb3f440689f395ed15d6a6177650c0b0ad37146a/mobile/android/geckoview/src/main/java/org/mozilla/gecko/util/FileUtils.java
     public static @Nullable String getSdCardStoragePath(final @NonNull Context context,

@@ -78,8 +78,11 @@ public class JLANFileServerConfiguration extends ServerConfiguration {
         // Shares
         FilesystemsConfigSection filesysConfig = new FilesystemsConfigSection(this);
         DiskInterface diskInterface = new DiskDriver();
-        addShare(diskInterface, this, filesysConfig, secConfig,
-                "External", FileUtils.getStoragePath(context));
+        String sdCardPath = FileUtils.getSdCardStoragePath(context, null);
+        if (sdCardPath != null) {
+            addShare(diskInterface, this, filesysConfig, secConfig,
+                    "External", sdCardPath);
+        }
         addShare(diskInterface, this, filesysConfig, secConfig,
                 "Internal", Environment.getExternalStorageDirectory().toString());
 
