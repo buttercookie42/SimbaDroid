@@ -10,7 +10,7 @@ constraintlayout = "2.2.0"
 extprops = "2.0.1"
 supersu = "6.0.0"
 jfileserver = "b163973"
-bouncycastle = "1.78.1"
+bouncycastle = "1.79"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
