@@ -27,6 +27,10 @@ android {
         generateLocaleConfig = true;
     }
 
+    buildFeatures {
+        viewBinding = true
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true

@@ -23,12 +23,15 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import de.buttercookie.simbadroid.databinding.ActivityMainBinding;
 import de.buttercookie.simbadroid.permissions.Permissions;
 import de.buttercookie.simbadroid.service.SmbService;
 import de.buttercookie.simbadroid.service.SmbServiceConnection;
 import de.buttercookie.simbadroid.util.ThreadUtils;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    private ActivityMainBinding binding;
+
     private SmbService mService;
     private boolean mBound = false;
     private final SmbServiceConnection mSmbSrvConn = new SmbServiceConnection() {
@@ -50,15 +53,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        binding.startService.setOnClickListener(this);
+        binding.stopService.setOnClickListener(this);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        findViewById(R.id.start_service).setOnClickListener(this);
-        findViewById(R.id.stop_service).setOnClickListener(this);
     }
 
     @Override
@@ -80,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @SuppressLint("InlinedApi")
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.start_service) {
+        if (v == binding.startService) {
             Intent intent = new Intent(this, SmbService.class);
             Permissions.from(this)
                     .withPermissions(Manifest.permission.POST_NOTIFICATIONS)
@@ -96,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         Toast.LENGTH_SHORT).show())
                                 .run(() -> startService(intent));
                     }));
-        } else if (v.getId() == R.id.stop_service) {
+        } else if (v == binding.stopService) {
             if (mBound) {
                 mService.stop();
             }
