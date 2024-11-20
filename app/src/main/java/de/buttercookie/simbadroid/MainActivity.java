@@ -83,28 +83,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @SuppressLint("InlinedApi")
+    private void startSmbService() {
+        Intent intent = new Intent(this, SmbService.class);
+        Permissions.from(this)
+                .withPermissions(Manifest.permission.POST_NOTIFICATIONS)
+                .alwaysRun(() -> ThreadUtils.postToUiThread(() -> {
+                    String storagePermission =
+                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ?
+                                    Manifest.permission.MANAGE_EXTERNAL_STORAGE :
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE;
+                    Permissions.from(this)
+                            .withPermissions(storagePermission)
+                            .andFallback(() -> Toast.makeText(this,
+                                    "Manage storage permission required",
+                                    Toast.LENGTH_SHORT).show())
+                            .run(() -> startService(intent));
+                }));
+    }
+
+    private void stopSmbService() {
+        if (mBound) {
+            mService.stop();
+        }
+    }
+
     @Override
     public void onClick(View v) {
         if (v == binding.startService) {
-            Intent intent = new Intent(this, SmbService.class);
-            Permissions.from(this)
-                    .withPermissions(Manifest.permission.POST_NOTIFICATIONS)
-                    .alwaysRun(() -> ThreadUtils.postToUiThread(() -> {
-                        String storagePermission =
-                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ?
-                                        Manifest.permission.MANAGE_EXTERNAL_STORAGE :
-                                        Manifest.permission.WRITE_EXTERNAL_STORAGE;
-                        Permissions.from(this)
-                                .withPermissions(storagePermission)
-                                .andFallback(() -> Toast.makeText(this,
-                                        "Manage storage permission required",
-                                        Toast.LENGTH_SHORT).show())
-                                .run(() -> startService(intent));
-                    }));
+            startSmbService();
         } else if (v == binding.stopService) {
-            if (mBound) {
-                mService.stop();
-            }
+            stopSmbService();
         }
     }
 
