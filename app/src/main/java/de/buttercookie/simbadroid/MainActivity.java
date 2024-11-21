@@ -84,6 +84,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @SuppressLint("InlinedApi")
     private void startSmbService() {
+        if (!mBound) {
+            Toast.makeText(this,
+                    R.string.toast_error_starting_server,
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!mService.isWifiAvailable()) {
+            Toast.makeText(this,
+                    R.string.toast_error_no_wifi,
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Intent intent = new Intent(this, SmbService.class);
         Permissions.from(this)
                 .withPermissions(Manifest.permission.POST_NOTIFICATIONS)

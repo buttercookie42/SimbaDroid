@@ -7,4 +7,6 @@
     <string name="notification_channel_name">SMB-Server</string>
     <string name="notification_channel_description">SMB Serverdienst-Benachrichtigung</string>
     <string name="message_server_running">Der SMB-Server läuft.</string>
+    <string name="toast_error_starting_server">Fehler beim Starten des Servers</string>
+    <string name="toast_error_no_wifi">Der Server benötigt eine aktive WLAN-Verbindung.</string>
 </resources>
