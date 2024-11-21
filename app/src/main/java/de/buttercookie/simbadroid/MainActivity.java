@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Permissions.from(this)
                             .withPermissions(storagePermission)
                             .andFallback(() -> Toast.makeText(this,
-                                    "Manage storage permission required",
+                                    R.string.toast_need_storage_permission,
                                     Toast.LENGTH_SHORT).show())
                             .run(() -> startService(intent));
                 }));
