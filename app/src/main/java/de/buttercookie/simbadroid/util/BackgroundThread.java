@@ -62,7 +62,7 @@ final class BackgroundThread extends Thread {
         while (handler == null) {
             try {
                 BackgroundThread.class.wait();
-            } catch (final InterruptedException e) {
+            } catch (final InterruptedException ignored) {
             }
         }
         return handler;

@@ -11,13 +11,11 @@ import org.filesys.server.filesys.DiskSizeInterface;
 import org.filesys.server.filesys.SrvDiskInfo;
 import org.filesys.smb.server.disk.JavaNIODiskDriver;
 
-import java.io.IOException;
-
 public class DiskDriver extends JavaNIODiskDriver implements DiskSizeInterface {
     private static final int BLOCK_SIZE = 512;
 
     @Override
-    public void getDiskInformation(DiskDeviceContext ctx, SrvDiskInfo diskDev) throws IOException {
+    public void getDiskInformation(DiskDeviceContext ctx, SrvDiskInfo diskDev) {
         StatFs statFs = new StatFs(ctx.getDeviceName());
 
         diskDev.setBlockSize(BLOCK_SIZE);
