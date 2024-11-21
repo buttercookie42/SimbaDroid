@@ -13,6 +13,7 @@ import org.filesys.smb.server.SMBServer;
 
 public class JLANFileServer {
     ServerConfiguration mCfg;
+    boolean mStarted = false;
 
     public JLANFileServer(Context context) throws Exception {
         mCfg = new JLANFileServerConfiguration(context);
@@ -21,16 +22,26 @@ public class JLANFileServer {
     }
 
     public void start() {
+        if (mStarted) {
+            return;
+        }
+
         for (int i = 0; i < mCfg.numberOfServers(); i++) {
             NetworkServer server = mCfg.getServer(i);
             server.startServer();
         }
+        mStarted = true;
     }
 
     public void stop() {
+        if (!mStarted) {
+            return;
+        }
+
         for (int i = 0; i < mCfg.numberOfServers(); i++) {
             NetworkServer server = mCfg.getServer(i);
             server.shutdownServer(false);
         }
+        mStarted = false;
     }
 }
