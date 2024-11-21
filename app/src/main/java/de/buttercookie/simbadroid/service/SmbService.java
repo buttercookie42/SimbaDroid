@@ -72,6 +72,10 @@ public class SmbService extends Service {
     @SuppressLint("InlinedApi")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (mRunning) {
+            return START_NOT_STICKY;
+        }
+
         try {
             mServer = new JLANFileServer(this);
         } catch (Exception e) {
