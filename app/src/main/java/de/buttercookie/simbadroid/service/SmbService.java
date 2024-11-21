@@ -97,8 +97,7 @@ public class SmbService extends Service {
             throw new RuntimeException(e);
         }
 
-        Notification notification =
-                getServiceNotification(getString(R.string.message_server_running));
+        Notification notification = getServiceNotification();
         ServiceCompat.startForeground(this, NOTIFICATION_ID, notification,
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST);
         acquireLocks();
@@ -148,9 +147,15 @@ public class SmbService extends Service {
         if (mRunning && mWifiAvailable) {
             Log.d(LOGTAG, "Starting SMB server");
             mServer.start();
+            getSystemService(NotificationManager.class)
+                    .notify(NOTIFICATION_ID, getServiceNotification());
         } else {
             Log.d(LOGTAG, "Stopping SMB server");
             mServer.stop();
+            if (!mWifiAvailable) {
+                getSystemService(NotificationManager.class)
+                        .notify(NOTIFICATION_ID, getServiceNotification());
+            }
         }
     }
 
@@ -222,17 +227,23 @@ public class SmbService extends Service {
         }
     }
 
-    private Notification getServiceNotification(CharSequence text) {
+    private Notification getServiceNotification() {
         Intent activityIntent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
                 activityIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         return new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(getString(R.string.app_name))
-                .setContentText(text)
+                .setContentText(getServiceNotificationText())
                 .setContentIntent(pendingIntent)
                 .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
                 .setOngoing(true)
                 .build();
+    }
+
+    private String getServiceNotificationText() {
+        return mWifiAvailable ?
+                getString(R.string.message_server_running) :
+                getString(R.string.message_server_waiting_wifi);
     }
 }
