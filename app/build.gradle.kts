@@ -21,6 +21,8 @@ android {
         versionName = "0.1a1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        resourceConfigurations += listOf("en", "de")
     }
 
     androidResources {
