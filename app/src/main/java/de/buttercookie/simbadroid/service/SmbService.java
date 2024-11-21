@@ -23,6 +23,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -54,6 +55,20 @@ public class SmbService extends Service {
     private PowerManager.WakeLock mWakeLock;
     private WifiManager.WifiLock mWifiLock;
     private ConnectivityManager.NetworkCallback mNetCallback;
+
+    private void setIsRunning(boolean isRunning) {
+        if (mRunning != isRunning) {
+            mRunning = isRunning;
+            updateServerState();
+        }
+    }
+
+    private void setWifiAvailable(boolean wifiAvailable) {
+        if (mWifiAvailable != wifiAvailable) {
+            mWifiAvailable = wifiAvailable;
+            updateServerState();
+        }
+    }
 
     @Override
     public void onCreate() {
@@ -102,9 +117,8 @@ public class SmbService extends Service {
         iptables(false, "nat", "A", "PREROUTING -p udp --dport 138 -j REDIRECT --to-port 1138");
         iptables(false, "nat", "A", "PREROUTING -p tcp --dport 139 -j REDIRECT --to-port 1139");
 
-        mServer.start();
+        setIsRunning(true);
 
-        mRunning = true;
         return START_NOT_STICKY;
     }
 
@@ -113,9 +127,7 @@ public class SmbService extends Service {
             return;
         }
 
-        if (mServer != null) {
-            mServer.stop();
-        }
+        setIsRunning(false);
 
         iptables(false, "nat", "D", "PREROUTING -p tcp --dport 445 -j REDIRECT --to-port 4450");
         iptables(false, "nat", "D", "PREROUTING -p udp --dport 137 -j REDIRECT --to-port 1137");
@@ -125,7 +137,6 @@ public class SmbService extends Service {
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
         releaseLocks();
         stopSelf();
-        mRunning = false;
     }
 
     @Override
@@ -136,6 +147,20 @@ public class SmbService extends Service {
 
     public boolean isWifiAvailable() {
         return mWifiAvailable;
+    }
+
+    private void updateServerState() {
+        if (mServer == null) {
+            return;
+        }
+
+        if (mRunning && mWifiAvailable) {
+            Log.d(LOGTAG, "Starting SMB server");
+            mServer.start();
+        } else {
+            Log.d(LOGTAG, "Stopping SMB server");
+            mServer.stop();
+        }
     }
 
     @SuppressWarnings("deprecation")
@@ -167,12 +192,12 @@ public class SmbService extends Service {
                 @Override
                 public void onAvailable(@NonNull Network network) {
                     connMgr.bindProcessToNetwork(network);
-                    mWifiAvailable = true;
+                    setWifiAvailable(true);
                 }
 
                 @Override
                 public void onLost(@NonNull Network network) {
-                    mWifiAvailable = false;
+                    setWifiAvailable(false);
                     connMgr.bindProcessToNetwork(null);
                 }
             };
