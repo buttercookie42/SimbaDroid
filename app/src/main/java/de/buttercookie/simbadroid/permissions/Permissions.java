@@ -21,22 +21,22 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 /**
  * Convenience class for checking and prompting for runtime permissions.
- *
- * Example:
- *
+ * <p>
+ * Example:<br>
+ * <code>
  *    Permissions.from(activity)
  *               .withPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
  *               .onUiThread()
  *               .andFallback(onPermissionDenied())
  *               .run(onPermissionGranted())
- *
+ * </code>
+ * <p>
  * This example will run the runnable returned by onPermissionGranted() if the WRITE_EXTERNAL_STORAGE permission is
  * already granted. Otherwise it will prompt the user and run the runnable returned by onPermissionGranted() or
  * onPermissionDenied() depending on whether the user accepted or not.
@@ -55,7 +55,7 @@ public class Permissions {
 
     /**
      * Entry point for checking (and optionally prompting for) runtime permissions.
-     *
+     * <p>
      * Note: The provided context needs to be an Activity context in order to prompt. Use doNotPrompt()
      * for all other contexts.
      */
@@ -73,20 +73,10 @@ public class Permissions {
         ThreadUtils.assertNotOnUiThread(); // We do not want to block the UI thread.
 
         // This task will block until all of the permissions have been granted
-        final FutureTask<Boolean> blockingTask = new FutureTask<>(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return true;
-            }
-        });
+        final FutureTask<Boolean> blockingTask = new FutureTask<>(() -> true);
 
         // This runnable will cancel the task if any of the permissions have been denied
-        Runnable cancelBlockingTask = new Runnable() {
-            @Override
-            public void run() {
-                blockingTask.cancel(true);
-            }
-        };
+        Runnable cancelBlockingTask = () -> blockingTask.cancel(true);
 
         Permissions.from(activity)
                 .withPermissions(permissions)
@@ -197,7 +187,7 @@ public class Permissions {
             Collections.addAll(permissions, block.getPermissions());
         }
 
-        permissionHelper.prompt(activity, permissions.toArray(new String[permissions.size()]));
+        permissionHelper.prompt(activity, permissions.toArray(new String[0]));
     }
 
     private static HashSet<String> collectGrantedPermissions(final @NonNull String[] permissions,
