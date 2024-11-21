@@ -14,12 +14,17 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.ServiceInfo;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.ServiceCompat;
@@ -43,16 +48,19 @@ public class SmbService extends Service {
     }
 
     private boolean mRunning = false;
+    private boolean mWifiAvailable = false;
 
     private JLANFileServer mServer;
     private PowerManager.WakeLock mWakeLock;
     private WifiManager.WifiLock mWifiLock;
+    private ConnectivityManager.NetworkCallback mNetCallback;
 
     @Override
     public void onCreate() {
         super.onCreate();
         createNotificationChannel();
         initLocks();
+        monitorWifi();
     }
 
     @Nullable
@@ -116,6 +124,16 @@ public class SmbService extends Service {
         mRunning = false;
     }
 
+    @Override
+    public void onDestroy() {
+        unmonitorWifi();
+        super.onDestroy();
+    }
+
+    public boolean isWifiAvailable() {
+        return mWifiAvailable;
+    }
+
     @SuppressWarnings("deprecation")
     private void initLocks() {
         final String tag = getString(R.string.app_name) + "::SmbService";
@@ -134,8 +152,41 @@ public class SmbService extends Service {
     }
 
     private void releaseLocks() {
-        mWakeLock.release();
         mWifiLock.release();
+        mWakeLock.release();
+    }
+
+    private void monitorWifi() {
+        ConnectivityManager connMgr = getSystemService(ConnectivityManager.class);
+        if (mNetCallback == null) {
+            mNetCallback = new ConnectivityManager.NetworkCallback() {
+                @Override
+                public void onAvailable(@NonNull Network network) {
+                    connMgr.bindProcessToNetwork(network);
+                    mWifiAvailable = true;
+                }
+
+                @Override
+                public void onLost(@NonNull Network network) {
+                    mWifiAvailable = false;
+                    connMgr.bindProcessToNetwork(null);
+                }
+            };
+        }
+        connMgr.requestNetwork(
+                new NetworkRequest.Builder().addTransportType(NetworkCapabilities.TRANSPORT_WIFI).build(),
+                mNetCallback
+        );
+    }
+
+    private void unmonitorWifi() {
+        ConnectivityManager connMgr = getSystemService(ConnectivityManager.class);
+        if (mNetCallback != null) {
+            mWifiAvailable = false;
+            connMgr.unregisterNetworkCallback(mNetCallback);
+            connMgr.bindProcessToNetwork(null);
+            mNetCallback = null;
+        }
     }
 
     private void createNotificationChannel() {
