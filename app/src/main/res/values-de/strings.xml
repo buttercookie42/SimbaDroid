@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SimbaDroid</string>
+    <string name="button_start_server">Server starten</string>
+    <string name="button_stop_server">Server anhalten</string>
+    <string name="toast_need_storage_permission">Berechtigung für Dateizugriff benötigt</string>
+    <string name="notification_channel_name">SMB-Server</string>
+    <string name="notification_channel_description">SMB Serverdienst-Benachrichtigung</string>
+    <string name="message_server_running">Der SMB-Server läuft.</string>
+</resources>
