@@ -76,7 +76,7 @@ public class SmbService extends Service {
         Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(getString(R.string.app_name))
-                .setContentText("The SMB server is running.")
+                .setContentText(getString(R.string.message_server_running))
                 .setContentIntent(pendingIntent)
                 .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
                 .setOngoing(true)
@@ -140,8 +140,8 @@ public class SmbService extends Service {
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String name = "SMB Server";
-            String description = "SMB server service notification";
+            String name = getString(R.string.notification_channel_name);
+            String description = getString(R.string.notification_channel_description);
             int importance = NotificationManager.IMPORTANCE_LOW;
             NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL, name, importance);
             channel.setDescription(description);
