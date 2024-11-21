@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">SimbaDroid</string>
-    <string name="button_start_server">Start service</string>
-    <string name="button_stop_server">Stop service</string>
+    <string name="button_start_server">Start server</string>
+    <string name="button_stop_server">Stop server</string>
     <string name="toast_need_storage_permission">Storage permission required</string>
     <string name="notification_channel_name">SMB Server</string>
     <string name="notification_channel_description">SMB server service notification</string>
