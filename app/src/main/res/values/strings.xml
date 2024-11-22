@@ -9,4 +9,5 @@
     <string name="toast_error_starting_server">Error starting server</string>
     <string name="toast_error_no_wifi">Please connect to a Wifi network to start the server.</string>
     <string name="message_server_waiting_wifi">Waiting for Wifi connection…</string>
+    <string name="action_stop">Stop server</string>
 </resources>

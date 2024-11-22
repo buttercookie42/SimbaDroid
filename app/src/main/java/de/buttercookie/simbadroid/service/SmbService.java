@@ -38,6 +38,8 @@ import de.buttercookie.simbadroid.util.ThreadUtils;
 public class SmbService extends Service {
     private static final String LOGTAG = "SmbService";
 
+    private static final String ACTION_STOP = "action_stop";
+
     private static final String NOTIFICATION_CHANNEL = SmbService.class.getName();
     private static final int NOTIFICATION_ID = 1;
     private static final long WIFI_UNAVAILABLE_TIMEOUT_MS = 20 * 60 * 1000;
@@ -95,7 +97,7 @@ public class SmbService extends Service {
     @SuppressLint("InlinedApi")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (mRunning) {
+        if (handleAction(intent) || mRunning) {
             return START_NOT_STICKY;
         }
 
@@ -118,6 +120,16 @@ public class SmbService extends Service {
         setIsRunning(true);
 
         return START_NOT_STICKY;
+    }
+
+    private boolean handleAction(Intent intent) {
+        boolean handled = false;
+        final String action = intent.getAction();
+        if (ACTION_STOP.equals(action)) {
+            stop();
+            handled = true;
+        }
+        return handled;
     }
 
     public void stop() {
@@ -250,17 +262,32 @@ public class SmbService extends Service {
     }
 
     private Notification getServiceNotification() {
-        Intent activityIntent = new Intent(getApplicationContext(), MainActivity.class);
+        Intent activityIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
                 activityIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        NotificationCompat.Action stopAction = getStopAction();
         return new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(getServiceNotificationText())
                 .setContentIntent(pendingIntent)
+                .addAction(stopAction)
                 .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
                 .setOngoing(true)
                 .build();
+    }
+
+    private @Nullable NotificationCompat.Action getStopAction() {
+        NotificationCompat.Action action = null;
+        if (mWifiAvailable) {
+            Intent stopIntent = new Intent(this, SmbService.class)
+                    .setAction(ACTION_STOP);
+            PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 0,
+                    stopIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            action = new NotificationCompat.Action.Builder(null,
+                    getString(R.string.action_stop), pendingIntent).build();
+        }
+        return action;
     }
 
     private String getServiceNotificationText() {
