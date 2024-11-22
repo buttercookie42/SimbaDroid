@@ -30,24 +30,6 @@ public final class ThreadUtils {
 
     private static volatile Thread sBackgroundThread;
 
-    public static class UiThreadBlockedException extends RuntimeException {
-        public UiThreadBlockedException() {
-            super();
-        }
-
-        public UiThreadBlockedException(final String msg) {
-            super(msg);
-        }
-
-        public UiThreadBlockedException(final String msg, final Throwable e) {
-            super(msg, e);
-        }
-
-        public UiThreadBlockedException(final Throwable e) {
-            super(e);
-        }
-    }
-
     public static void dumpAllStackTraces() {
         Log.w(LOGTAG, "Dumping ALL the threads!");
         Map<Thread, StackTraceElement[]> allStacks = Thread.getAllStackTraces();
