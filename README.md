@@ -16,7 +16,7 @@ Portions of the code are provided under the Apache License, Version 2.0 (see apa
 
 _JFileServer_ is used under the LGPL-3.0 license (see lgpl-3.0.md and gpl-3.0.md)
 
-_libsu_ is used under the Apache License, Version 2.0
+_libsu_ and the _Android Support Library_ are used under the Apache License, Version 2.0
 
 _Bouncy Castle_ is used under the following license:
 
