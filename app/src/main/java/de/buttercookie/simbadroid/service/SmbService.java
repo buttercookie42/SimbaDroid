@@ -33,12 +33,14 @@ import androidx.core.app.ServiceCompat;
 import de.buttercookie.simbadroid.MainActivity;
 import de.buttercookie.simbadroid.R;
 import de.buttercookie.simbadroid.jlan.JLANFileServer;
+import de.buttercookie.simbadroid.util.ThreadUtils;
 
 public class SmbService extends Service {
     private static final String LOGTAG = "SmbService";
 
     private static final String NOTIFICATION_CHANNEL = SmbService.class.getName();
     private static final int NOTIFICATION_ID = 1;
+    private static final long WIFI_UNAVAILABLE_TIMEOUT_MS = 20 * 60 * 1000;
 
     private final IBinder binder = new SmbBinder();
 
@@ -55,6 +57,7 @@ public class SmbService extends Service {
     private PowerManager.WakeLock mWakeLock;
     private WifiManager.WifiLock mWifiLock;
     private ConnectivityManager.NetworkCallback mNetCallback;
+    private Runnable mWifiTimeoutRunnable;
 
     private void setIsRunning(boolean isRunning) {
         if (mRunning != isRunning) {
@@ -67,6 +70,11 @@ public class SmbService extends Service {
         if (mWifiAvailable != wifiAvailable) {
             mWifiAvailable = wifiAvailable;
             updateServerState();
+            if (wifiAvailable) {
+                stopWifiTimeout();
+            } else {
+                startWifiTimeout();
+            }
         }
     }
 
@@ -132,6 +140,7 @@ public class SmbService extends Service {
     @Override
     public void onDestroy() {
         unmonitorWifi();
+        stopWifiTimeout();
         super.onDestroy();
     }
 
@@ -156,6 +165,19 @@ public class SmbService extends Service {
                 getSystemService(NotificationManager.class)
                         .notify(NOTIFICATION_ID, getServiceNotification());
             }
+        }
+    }
+
+    private void startWifiTimeout() {
+        stopWifiTimeout();
+        mWifiTimeoutRunnable = this::stop;
+        ThreadUtils.postDelayedToUiThread(mWifiTimeoutRunnable, WIFI_UNAVAILABLE_TIMEOUT_MS);
+    }
+
+    private void stopWifiTimeout() {
+        if (mWifiTimeoutRunnable != null) {
+            ThreadUtils.removeCallbacksFromUiThread(mWifiTimeoutRunnable);
+            mWifiTimeoutRunnable = null;
         }
     }
 
