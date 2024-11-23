@@ -9,7 +9,7 @@ activity = "1.9.3"
 constraintlayout = "2.2.0"
 extprops = "2.0.1"
 supersu = "6.0.0"
-jfileserver = "1.4.1-SNAPSHOT"
+jfileserver = "b163973"
 bouncycastle = "1.78.1"
 
 [libraries]
@@ -23,7 +23,7 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 libsu-core = { group = "com.github.topjohnwu.libsu", name = "core", version.ref = "supersu" }
 libsu-service = { group = "com.github.topjohnwu.libsu", name = "service", version.ref = "supersu" }
 libsu-nio = { group = "com.github.topjohnwu.libsu", name = "nio", version.ref = "supersu" }
-jfileserver = { group = "org.filesys", name = "jfileserver", version.ref = "jfileserver"}
+jfileserver = { group = "com.github.buttercookie42", name = "jfileserver", version.ref = "jfileserver"}
 bouncycastle-bcprov = { group = "org.bouncycastle", name = "bcprov-jdk15to18", version.ref = "bouncycastle" }
 
 [plugins]
