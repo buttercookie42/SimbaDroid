@@ -22,6 +22,7 @@ dependencyResolutionManagement {
         maven("https://jitpack.io") {
             content {
                 includeGroup("com.github.topjohnwu.libsu")
+                includeGroup("com.github.buttercookie42")
             }
         }
         google()
