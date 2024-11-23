@@ -84,8 +84,6 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 
     implementation(libs.libsu.core)
-    implementation(libs.libsu.service)
-    implementation(libs.libsu.nio)
     implementation(libs.jfileserver) {
         // Hazlecast is only needed for clustering and not compatible with Android anyway
         exclude(group = "com.hazelcast", module = "hazelcast")
