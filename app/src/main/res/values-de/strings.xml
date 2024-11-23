@@ -11,4 +11,6 @@
     <string name="toast_error_no_wifi">Der Server benötigt eine aktive WLAN-Verbindung.</string>
     <string name="message_server_waiting_wifi">Warte auf WLAN-Verbindung…</string>
     <string name="action_stop">Server anhalten</string>
+    <string name="shortcut_start_server_short">Starten</string>
+    <string name="shortcut_start_server_long">Server starten</string>
 </resources>

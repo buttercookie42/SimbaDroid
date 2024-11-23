@@ -38,7 +38,7 @@ import de.buttercookie.simbadroid.util.ThreadUtils;
 public class SmbService extends Service {
     private static final String LOGTAG = "SmbService";
 
-    private static final String ACTION_STOP = "action_stop";
+    private static final String ACTION_STOP = "de.buttercookie.simbadroid.STOP_SERVER";
 
     private static final String NOTIFICATION_CHANNEL = SmbService.class.getName();
     private static final int NOTIFICATION_ID = 1;

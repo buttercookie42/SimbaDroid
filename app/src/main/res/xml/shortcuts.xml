@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+<shortcuts xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:targetApi="n_mr1">
+    <!-- Ignore the minApi check, third-party launchers can actually display and launch shortcuts
+    even on previous Android versions. -->
+    <shortcut
+        android:shortcutId="start_server"
+        android:enabled="true"
+        android:shortcutShortLabel="@string/shortcut_start_server_short"
+        android:shortcutLongLabel="@string/shortcut_start_server_long">
+        <intent
+            android:action="de.buttercookie.simbadroid.START_SERVER"
+            android:targetPackage="de.buttercookie.simbadroid"
+            android:targetClass="de.buttercookie.simbadroid.IntentReceiverActivity" />
+    </shortcut>
+</shortcuts>
