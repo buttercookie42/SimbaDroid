@@ -40,7 +40,18 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
+
+        <activity
+            android:name=".IntentReceiverActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:relinquishTaskIdentity="true"
+            android:taskAffinity=""
+            android:exported="true"
+            android:excludeFromRecents="true" />
 
         <service
             android:name=".service.SmbService"

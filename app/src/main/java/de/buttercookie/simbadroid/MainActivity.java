@@ -30,6 +30,8 @@ import de.buttercookie.simbadroid.service.SmbServiceConnection;
 import de.buttercookie.simbadroid.util.ThreadUtils;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    public static final String ACTION_START = "de.buttercookie.simbadroid.START_SERVER";
+
     private ActivityMainBinding binding;
 
     private SmbService mService;
@@ -70,8 +72,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStart() {
         super.onStart();
 
-        Intent intent = new Intent(this, SmbService.class);
-        bindService(intent, mSmbSrvConn, Context.BIND_AUTO_CREATE);
+        Intent serviceIntent = new Intent(this, SmbService.class);
+        bindService(serviceIntent, mSmbSrvConn, Context.BIND_AUTO_CREATE);
     }
 
     @Override
