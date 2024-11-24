@@ -34,7 +34,7 @@ import java.util.EnumSet;
 import de.buttercookie.simbadroid.util.FileUtils;
 
 public class JLANFileServerConfiguration extends ServerConfiguration {
-    private static final String HOSTNAME = "JLANHOST";
+    private static final String HOSTNAME = "SIMBADROID";
 
     private static final int DefaultThreadPoolInit = 6;
     private static final int DefaultThreadPoolMax = 6;
