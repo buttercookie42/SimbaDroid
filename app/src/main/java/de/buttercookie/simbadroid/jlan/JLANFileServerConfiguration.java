@@ -5,6 +5,7 @@
 package de.buttercookie.simbadroid.jlan;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Environment;
 
 import org.filesys.debug.DebugConfigSection;
@@ -114,6 +115,9 @@ public class JLANFileServerConfiguration extends ServerConfiguration {
         smbConfig.setNetBIOSDebug(false);
         smbConfig.setHostAnnounceDebug(false);
         smbConfig.setSessionDebugFlags(EnumSet.noneOf(SMBSrvSession.Dbg.class));
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            smbConfig.setDisableNIOCode(true);
+        }
     }
 
     private static void addShare(DiskInterface diskInterface,
