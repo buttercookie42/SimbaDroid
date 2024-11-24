@@ -293,8 +293,9 @@ public class SmbService extends Service {
                     .setAction(ACTION_STOP);
             PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 0,
                     stopIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-            action = new NotificationCompat.Action.Builder(null,
-                    getString(R.string.action_stop), pendingIntent).build();
+            action = new NotificationCompat.Action.Builder(R.drawable.ic_stop,
+                    getString(R.string.action_stop), pendingIntent)
+                    .build();
         }
         return action;
     }
