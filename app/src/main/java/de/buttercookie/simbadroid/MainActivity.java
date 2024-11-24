@@ -4,12 +4,9 @@
 
 package de.buttercookie.simbadroid;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
@@ -27,7 +24,6 @@ import de.buttercookie.simbadroid.databinding.ActivityMainBinding;
 import de.buttercookie.simbadroid.permissions.Permissions;
 import de.buttercookie.simbadroid.service.SmbService;
 import de.buttercookie.simbadroid.service.SmbServiceConnection;
-import de.buttercookie.simbadroid.util.ThreadUtils;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private ActivityMainBinding binding;
@@ -82,7 +78,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBound = false;
     }
 
-    @SuppressLint("InlinedApi")
     private void startSmbService() {
         if (!mBound) {
             Toast.makeText(this,
@@ -98,21 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
-        Intent intent = new Intent(this, SmbService.class);
-        Permissions.from(this)
-                .withPermissions(Manifest.permission.POST_NOTIFICATIONS)
-                .alwaysRun(() -> ThreadUtils.postToUiThread(() -> {
-                    String storagePermission =
-                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ?
-                                    Manifest.permission.MANAGE_EXTERNAL_STORAGE :
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE;
-                    Permissions.from(this)
-                            .withPermissions(storagePermission)
-                            .andFallback(() -> Toast.makeText(this,
-                                    R.string.toast_need_storage_permission,
-                                    Toast.LENGTH_SHORT).show())
-                            .run(() -> startService(intent));
-                }));
+        SmbService.startService(this);
     }
 
     private void stopSmbService() {
