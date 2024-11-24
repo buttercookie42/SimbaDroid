@@ -23,7 +23,7 @@ public class IntentReceiverActivity extends Activity {
         final String action = intent.getAction();
 
         if (ACTION_START.equals(action)) {
-            SmbService.startServiceNoPermissionPrompts(this);
+            SmbService.startService(this, false);
         }
 
         finish();

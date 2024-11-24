@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
-        SmbService.startService(this);
+        SmbService.startService(this, true);
     }
 
     private void stopSmbService() {
