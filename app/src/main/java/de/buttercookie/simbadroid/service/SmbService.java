@@ -300,47 +300,31 @@ public class SmbService extends Service {
     }
 
     /**
-     * Start the service, prompting for the necessary permissions if necessary.
+     * Start the service, optionally prompting for the necessary permissions.
      *
-     * @param context Must be an Activity context in order to prompt for the required permissions.
+     * @param context Must be an <code>Activity</code> context if <code>promptForPermissions</code>
+     *                is <code>true</code>.
+     * @param promptForPermissions Whether to prompt for the required Android permissions.
      */
     @SuppressLint("InlinedApi")
-    public static void startService(final Context context) {
+    public static void startService(final Context context, final boolean promptForPermissions) {
         Intent intent = new Intent(context, SmbService.class);
-        Permissions.from(context)
-                .withPermissions(Manifest.permission.POST_NOTIFICATIONS)
-                .alwaysRun(() -> ThreadUtils.postToUiThread(() -> {
-                    String storagePermission =
-                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ?
-                                    Manifest.permission.MANAGE_EXTERNAL_STORAGE :
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE;
-                    Permissions.from(context)
-                            .withPermissions(storagePermission)
-                            .andFallback(() -> Toast.makeText(context,
-                                    R.string.toast_need_storage_permission,
-                                    Toast.LENGTH_SHORT).show())
-                            .run(() -> context.startService(intent));
-                }));
-    }
 
-    /**
-     * Start the service without prompting for permissions. The service will only be started if
-     * all the required permissions have already been granted.
-     */
-    @SuppressLint("InlinedApi")
-    public static void startServiceNoPermissionPrompts(final Context context) {
-        Intent intent = new Intent(context, SmbService.class);
-        Permissions.from(context)
-                .withPermissions(Manifest.permission.POST_NOTIFICATIONS)
-                .doNotPrompt()
+        var notifPerm = Permissions.from(context);
+        if (!promptForPermissions) {
+            notifPerm.doNotPrompt();
+        }
+        notifPerm.withPermissions(Manifest.permission.POST_NOTIFICATIONS)
                 .alwaysRun(() -> ThreadUtils.postToUiThread(() -> {
                     String storagePermission =
                             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ?
                                     Manifest.permission.MANAGE_EXTERNAL_STORAGE :
                                     Manifest.permission.WRITE_EXTERNAL_STORAGE;
-                    Permissions.from(context)
-                            .withPermissions(storagePermission)
-                            .doNotPrompt()
+                    var storagePerm = Permissions.from(context);
+                    if (!promptForPermissions) {
+                        storagePerm.doNotPrompt();
+                    }
+                    storagePerm.withPermissions(storagePermission)
                             .andFallback(() -> Toast.makeText(context,
                                     R.string.toast_need_storage_permission,
                                     Toast.LENGTH_SHORT).show())
