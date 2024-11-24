@@ -45,6 +45,7 @@ public class SmbService extends Service {
 
     private static final String NOTIFICATION_CHANNEL = SmbService.class.getName();
     private static final int NOTIFICATION_ID = 1;
+    private static final long WIFI_UNAVAILABLE_STARTUP_TIMEOUT_MS = 5 * 60 * 1000;
     private static final long WIFI_UNAVAILABLE_TIMEOUT_MS = 20 * 60 * 1000;
 
     private final IBinder binder = new SmbBinder();
@@ -63,6 +64,7 @@ public class SmbService extends Service {
     private WifiManager.WifiLock mWifiLock;
     private ConnectivityManager.NetworkCallback mNetCallback;
     private Runnable mWifiTimeoutRunnable;
+    private long mWifiTimeoutMs = WIFI_UNAVAILABLE_STARTUP_TIMEOUT_MS;
 
     private void setIsRunning(boolean isRunning) {
         if (mRunning != isRunning) {
@@ -74,12 +76,10 @@ public class SmbService extends Service {
     private void setWifiAvailable(boolean wifiAvailable) {
         if (mWifiAvailable != wifiAvailable) {
             mWifiAvailable = wifiAvailable;
-            updateServerState();
             if (wifiAvailable) {
-                stopWifiTimeout();
-            } else {
-                startWifiTimeout();
+                mWifiTimeoutMs = WIFI_UNAVAILABLE_TIMEOUT_MS;
             }
+            updateServerState();
         }
     }
 
@@ -164,6 +164,12 @@ public class SmbService extends Service {
     }
 
     private void updateServerState() {
+        if (mWifiAvailable) {
+            stopWifiTimeout();
+        } else {
+            startWifiTimeout();
+        }
+
         if (mServer == null) {
             return;
         }
@@ -186,7 +192,7 @@ public class SmbService extends Service {
     private void startWifiTimeout() {
         stopWifiTimeout();
         mWifiTimeoutRunnable = this::stop;
-        ThreadUtils.postDelayedToUiThread(mWifiTimeoutRunnable, WIFI_UNAVAILABLE_TIMEOUT_MS);
+        ThreadUtils.postDelayedToUiThread(mWifiTimeoutRunnable, mWifiTimeoutMs);
     }
 
     private void stopWifiTimeout() {
