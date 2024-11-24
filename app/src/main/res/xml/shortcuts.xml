@@ -10,6 +10,7 @@
     <shortcut
         android:shortcutId="start_server"
         android:enabled="true"
+        android:icon="@drawable/ic_start"
         android:shortcutShortLabel="@string/shortcut_start_server_short"
         android:shortcutLongLabel="@string/shortcut_start_server_long">
         <!-- Note: Keep the Intent action in sync with the definition in Intents.java -->
