@@ -1,11 +1,15 @@
 # SimbaDroid
 
+![App logo](app/src/main/res/mipmap-mdpi/ic_launcher.png)
+
 SimbaDroid is an SMB server for Android, allowing you to access the contents of your storage (both
 internal storage or an external SD card) from your computer via wi-fi.
 
 Due to Android limitations, this app requires root (as on all Unixoid operating systems, it is not
 possible to open a port < 1024 otherwise, and the default SMB port is 445 and Windows doesn't work
-with anything else.)
+with anything else). Without root, you either need some sort of SMB client which allows configuring
+the port used (SimbaDroid uses port 4450), or some kind of port mapping software to allow Windows to
+transparently connect to port 4450.
 
 Due to [JFileServer](https://github.com/FileSysOrg/jfileserver) limitations, only SMBv1 is
 supported, which isn't ideal for modern Windows, either, but c'est la vie…
@@ -15,6 +19,12 @@ shares for the internal storage as well as an external SD card (if one is detect
 automatically and are accessible without authentication, so be careful about using this app in
 public networks. I might add some options for configuring your own custom shares and user
 authentication eventually, but no guarantees as to if and when.
+
+`READ/WRITE/MANAGE_EXTERNAL_STORAGE` is required for filesystem access.
+
+## Compatibility
+
+SimbaDroid should run on Android 6 and newer, though only Android 6 and 14 have been tested so far.
 
 ## Licenses
 
