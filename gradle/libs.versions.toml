@@ -11,6 +11,7 @@ extprops = "2.0.1"
 supersu = "6.0.0"
 jfileserver = "b163973"
 bouncycastle = "1.79"
+corelibdesugar = "2.1.3"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -25,6 +26,7 @@ libsu-service = { group = "com.github.topjohnwu.libsu", name = "service", versio
 libsu-nio = { group = "com.github.topjohnwu.libsu", name = "nio", version.ref = "supersu" }
 jfileserver = { group = "com.github.buttercookie42", name = "jfileserver", version.ref = "jfileserver"}
 bouncycastle-bcprov = { group = "org.bouncycastle", name = "bcprov-jdk15to18", version.ref = "bouncycastle" }
+corelibdesugar = { group = "com.android.tools", name = "desugar_jdk_libs_nio", version.ref = "corelibdesugar" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
