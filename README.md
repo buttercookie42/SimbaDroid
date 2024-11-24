@@ -23,6 +23,10 @@ SimbaDroid is © Jan Henning, 2024 and is mostly provided under the Mozilla Publ
 
 Portions of the code are provided under the Apache License, Version 2.0 (see apache-2.0.txt)
 
+"[Lion](https://thenounproject.com/icon/lion-6029941/)" icon used in the logo by Gabriel Baudon
+from [the Noun Project](https://thenounproject.com/)  under the
+[CC BY 3.0 license](https://creativecommons.org/licenses/by/3.0/).
+
 _JFileServer_ is used under the LGPL-3.0 license (see lgpl-3.0.md and gpl-3.0.md)
 
 _libsu_ and the _Android Support Library_ are used under the Apache License, Version 2.0
