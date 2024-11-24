@@ -7,12 +7,14 @@ package de.buttercookie.simbadroid.service;
 import static de.buttercookie.simbadroid.Intents.ACTION_STOP;
 import static de.buttercookie.simbadroid.util.Iptables.iptables;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ServiceInfo;
 import android.net.ConnectivityManager;
@@ -25,6 +27,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,6 +37,7 @@ import androidx.core.app.ServiceCompat;
 import de.buttercookie.simbadroid.MainActivity;
 import de.buttercookie.simbadroid.R;
 import de.buttercookie.simbadroid.jlan.JLANFileServer;
+import de.buttercookie.simbadroid.permissions.Permissions;
 import de.buttercookie.simbadroid.util.ThreadUtils;
 
 public class SmbService extends Service {
@@ -293,5 +297,54 @@ public class SmbService extends Service {
         return mWifiAvailable ?
                 getString(R.string.message_server_running) :
                 getString(R.string.message_server_waiting_wifi);
+    }
+
+    /**
+     * Start the service, prompting for the necessary permissions if necessary.
+     *
+     * @param context Must be an Activity context in order to prompt for the required permissions.
+     */
+    @SuppressLint("InlinedApi")
+    public static void startService(final Context context) {
+        Intent intent = new Intent(context, SmbService.class);
+        Permissions.from(context)
+                .withPermissions(Manifest.permission.POST_NOTIFICATIONS)
+                .alwaysRun(() -> ThreadUtils.postToUiThread(() -> {
+                    String storagePermission =
+                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ?
+                                    Manifest.permission.MANAGE_EXTERNAL_STORAGE :
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE;
+                    Permissions.from(context)
+                            .withPermissions(storagePermission)
+                            .andFallback(() -> Toast.makeText(context,
+                                    R.string.toast_need_storage_permission,
+                                    Toast.LENGTH_SHORT).show())
+                            .run(() -> context.startService(intent));
+                }));
+    }
+
+    /**
+     * Start the service without prompting for permissions. The service will only be started if
+     * all the required permissions have already been granted.
+     */
+    @SuppressLint("InlinedApi")
+    public static void startServiceNoPermissionPrompts(final Context context) {
+        Intent intent = new Intent(context, SmbService.class);
+        Permissions.from(context)
+                .withPermissions(Manifest.permission.POST_NOTIFICATIONS)
+                .doNotPrompt()
+                .alwaysRun(() -> ThreadUtils.postToUiThread(() -> {
+                    String storagePermission =
+                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ?
+                                    Manifest.permission.MANAGE_EXTERNAL_STORAGE :
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE;
+                    Permissions.from(context)
+                            .withPermissions(storagePermission)
+                            .doNotPrompt()
+                            .andFallback(() -> Toast.makeText(context,
+                                    R.string.toast_need_storage_permission,
+                                    Toast.LENGTH_SHORT).show())
+                            .run(() -> context.startService(intent));
+                }));
     }
 }
