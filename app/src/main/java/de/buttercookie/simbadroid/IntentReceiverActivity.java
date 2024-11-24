@@ -4,7 +4,7 @@
 
 package de.buttercookie.simbadroid;
 
-import static de.buttercookie.simbadroid.MainActivity.ACTION_START;
+import static de.buttercookie.simbadroid.Intents.ACTION_START;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
