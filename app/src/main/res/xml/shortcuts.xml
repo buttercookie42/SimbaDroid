@@ -12,6 +12,7 @@
         android:enabled="true"
         android:shortcutShortLabel="@string/shortcut_start_server_short"
         android:shortcutLongLabel="@string/shortcut_start_server_long">
+        <!-- Note: Keep the Intent action in sync with the definition in Intents.java -->
         <intent
             android:action="de.buttercookie.simbadroid.START_SERVER"
             android:targetPackage="de.buttercookie.simbadroid"
