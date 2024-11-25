@@ -19,6 +19,7 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "0.1a1"
+        base.archivesName = "$applicationId-$versionName"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
