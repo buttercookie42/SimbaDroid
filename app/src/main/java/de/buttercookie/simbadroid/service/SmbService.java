@@ -248,8 +248,8 @@ public class SmbService extends Service {
     }
 
     private void unmonitorWifi() {
-        ConnectivityManager connMgr = getSystemService(ConnectivityManager.class);
         if (mNetCallback != null) {
+            ConnectivityManager connMgr = getSystemService(ConnectivityManager.class);
             mWifiAvailable = false;
             connMgr.unregisterNetworkCallback(mNetCallback);
             connMgr.bindProcessToNetwork(null);
