@@ -21,6 +21,8 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
+import android.net.nsd.NsdManager;
+import android.net.nsd.NsdServiceInfo;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.Build;
@@ -33,6 +35,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.ServiceCompat;
+
+import org.filesys.smb.TcpipSMB;
 
 import de.buttercookie.simbadroid.MainActivity;
 import de.buttercookie.simbadroid.R;
@@ -62,9 +66,13 @@ public class SmbService extends Service {
     private JLANFileServer mServer;
     private PowerManager.WakeLock mWakeLock;
     private WifiManager.WifiLock mWifiLock;
+
     private ConnectivityManager.NetworkCallback mNetCallback;
     private Runnable mWifiTimeoutRunnable;
     private long mWifiTimeoutMs = WIFI_UNAVAILABLE_STARTUP_TIMEOUT_MS;
+
+    private NsdManager.RegistrationListener mNsdRegistrationListener;
+    private String mServiceName;
 
     private void setIsRunning(boolean isRunning) {
         if (mRunning != isRunning) {
@@ -154,6 +162,7 @@ public class SmbService extends Service {
 
     @Override
     public void onDestroy() {
+        unregisterNsdService();
         unmonitorWifi();
         stopWifiTimeout();
         super.onDestroy();
@@ -179,6 +188,7 @@ public class SmbService extends Service {
             mServer.start();
             getSystemService(NotificationManager.class)
                     .notify(NOTIFICATION_ID, getServiceNotification());
+            registerNsdService();
         } else {
             Log.d(LOGTAG, "Stopping SMB server");
             mServer.stop();
@@ -186,6 +196,7 @@ public class SmbService extends Service {
                 getSystemService(NotificationManager.class)
                         .notify(NOTIFICATION_ID, getServiceNotification());
             }
+            unregisterNsdService();
         }
     }
 
@@ -255,6 +266,49 @@ public class SmbService extends Service {
             connMgr.unregisterNetworkCallback(mNetCallback);
             connMgr.bindProcessToNetwork(null);
             mNetCallback = null;
+        }
+    }
+
+    private void registerNsdService() {
+        NsdServiceInfo serviceInfo = new NsdServiceInfo();
+        serviceInfo.setServiceName(getString(R.string.app_name));
+        serviceInfo.setServiceType("_microsoft-ds._tcp.");
+        serviceInfo.setPort(TcpipSMB.PORT);
+
+        if (mNsdRegistrationListener == null) {
+            mNsdRegistrationListener = new NsdManager.RegistrationListener() {
+                @Override
+                public void onServiceRegistered(NsdServiceInfo serviceInfo) {
+                    mServiceName = serviceInfo.getServiceName();
+                }
+
+                @Override
+                public void onRegistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
+
+                }
+
+                @Override
+                public void onServiceUnregistered(NsdServiceInfo serviceInfo) {
+                    mServiceName = null;
+                }
+
+                @Override
+                public void onUnregistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
+
+                }
+            };
+        }
+
+        NsdManager nsdManager = getSystemService(NsdManager.class);
+
+        nsdManager.registerService(
+                serviceInfo, NsdManager.PROTOCOL_DNS_SD, mNsdRegistrationListener);
+    }
+
+    private void unregisterNsdService() {
+        if (mNsdRegistrationListener != null) {
+            NsdManager nsdManager = getSystemService(NsdManager.class);
+            nsdManager.unregisterService(mNsdRegistrationListener);
         }
     }
 
