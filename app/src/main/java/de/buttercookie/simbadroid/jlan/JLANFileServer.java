@@ -15,8 +15,8 @@ public class JLANFileServer {
     ServerConfiguration mCfg;
     boolean mStarted = false;
 
-    public JLANFileServer(Context context) throws Exception {
-        mCfg = new JLANFileServerConfiguration(context);
+    public JLANFileServer(Context context, String hostName) throws Exception {
+        mCfg = new JLANFileServerConfiguration(context, hostName);
         mCfg.addServer(new NetBIOSNameServer(mCfg));
         mCfg.addServer(new SMBServer(mCfg));
     }

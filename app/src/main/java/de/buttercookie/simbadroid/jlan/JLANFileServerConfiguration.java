@@ -35,8 +35,6 @@ import java.util.EnumSet;
 import de.buttercookie.simbadroid.util.FileUtils;
 
 public class JLANFileServerConfiguration extends ServerConfiguration {
-    private static final String HOSTNAME = "SIMBADROID";
-
     private static final int DefaultThreadPoolInit = 6;
     private static final int DefaultThreadPoolMax = 6;
 
@@ -44,10 +42,9 @@ public class JLANFileServerConfiguration extends ServerConfiguration {
     private static final int[] DefaultMemoryPoolInitAlloc = {20, 20, 5, 5};
     private static final int[] DefaultMemoryPoolMaxAlloc = {100, 50, 50, 50};
 
-    public JLANFileServerConfiguration(Context context)
+    public JLANFileServerConfiguration(Context context, String hostName)
             throws InvalidConfigurationException, DeviceContextException {
-        super(HOSTNAME);
-        setServerName(HOSTNAME);
+        super(hostName);
 
         // Debug
         DebugConfigSection debugConfig = new DebugConfigSection(this);
@@ -89,7 +86,7 @@ public class JLANFileServerConfiguration extends ServerConfiguration {
 
         // SMB
         SMBConfigSection smbConfig = new SMBConfigSection(this);
-        smbConfig.setServerName(HOSTNAME);
+        smbConfig.setServerName(hostName);
         smbConfig.setDomainName("WORKGROUP");
         smbConfig.setHostAnnounceInterval(5);
         smbConfig.setHostAnnouncer(true);

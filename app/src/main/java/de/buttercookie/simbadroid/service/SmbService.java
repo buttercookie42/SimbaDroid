@@ -113,7 +113,7 @@ public class SmbService extends Service {
         }
 
         try {
-            mServer = new JLANFileServer(this);
+            mServer = new JLANFileServer(this, getString(R.string.app_name));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -270,12 +270,12 @@ public class SmbService extends Service {
     }
 
     private void registerNsdService() {
-        NsdServiceInfo serviceInfo = new NsdServiceInfo();
-        serviceInfo.setServiceName(getString(R.string.app_name));
-        serviceInfo.setServiceType("_microsoft-ds._tcp.");
-        serviceInfo.setPort(TcpipSMB.PORT);
-
         if (mNsdRegistrationListener == null) {
+            NsdServiceInfo serviceInfo = new NsdServiceInfo();
+            serviceInfo.setServiceName(getString(R.string.app_name));
+            serviceInfo.setServiceType("_microsoft-ds._tcp.");
+            serviceInfo.setPort(TcpipSMB.PORT);
+
             mNsdRegistrationListener = new NsdManager.RegistrationListener() {
                 @Override
                 public void onServiceRegistered(NsdServiceInfo serviceInfo) {
@@ -297,18 +297,18 @@ public class SmbService extends Service {
 
                 }
             };
+
+            NsdManager nsdManager = getSystemService(NsdManager.class);
+            nsdManager.registerService(
+                    serviceInfo, NsdManager.PROTOCOL_DNS_SD, mNsdRegistrationListener);
         }
-
-        NsdManager nsdManager = getSystemService(NsdManager.class);
-
-        nsdManager.registerService(
-                serviceInfo, NsdManager.PROTOCOL_DNS_SD, mNsdRegistrationListener);
     }
 
     private void unregisterNsdService() {
         if (mNsdRegistrationListener != null) {
             NsdManager nsdManager = getSystemService(NsdManager.class);
             nsdManager.unregisterService(mNsdRegistrationListener);
+            mNsdRegistrationListener = null;
         }
     }
 
