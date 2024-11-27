@@ -236,8 +236,8 @@ public class SmbService extends Service {
     }
 
     private void monitorWifi() {
-        ConnectivityManager connMgr = getSystemService(ConnectivityManager.class);
         if (mNetCallback == null) {
+            ConnectivityManager connMgr = getSystemService(ConnectivityManager.class);
             mNetCallback = new ConnectivityManager.NetworkCallback() {
                 @Override
                 public void onAvailable(@NonNull Network network) {
@@ -251,12 +251,12 @@ public class SmbService extends Service {
                     connMgr.bindProcessToNetwork(null);
                 }
             };
+            connMgr.requestNetwork(
+                    new NetworkRequest.Builder()
+                            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI).build(),
+                    mNetCallback
+            );
         }
-        connMgr.requestNetwork(
-                new NetworkRequest.Builder()
-                        .addTransportType(NetworkCapabilities.TRANSPORT_WIFI).build(),
-                mNetCallback
-        );
     }
 
     private void unmonitorWifi() {
