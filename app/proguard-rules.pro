@@ -24,6 +24,7 @@
 
 # JLANFileServer reflection usage from configuration file
 -keep class org.filesys.debug.ConsoleDebug { public *; }
--keep class org.bouncycastle.jce.provider.BouncyCastleProvider { public *; }
+# MD4 via BouncyCastle needed for NTLM login
+-keep class org.bouncycastle.jcajce.provider.digest.MD4** { *; }
 # more JLANFileServer classes that need to be kept
 -keep class org.filesys.smb.server.*Handler { *; }

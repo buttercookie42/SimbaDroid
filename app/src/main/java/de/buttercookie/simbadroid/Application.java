@@ -6,8 +6,16 @@ package de.buttercookie.simbadroid;
 
 import com.topjohnwu.superuser.Shell;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+import java.security.Security;
+
 public class Application extends android.app.Application {
     static {
+        // Override Android's built-in BC provider with our own dependency
+        Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
+        Security.insertProviderAt(new BouncyCastleProvider(), 1);
+
         Shell.setDefaultBuilder(Shell.Builder.create()
                 .setFlags(Shell.FLAG_MOUNT_MASTER));
     }

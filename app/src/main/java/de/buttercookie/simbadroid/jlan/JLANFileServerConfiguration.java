@@ -69,7 +69,6 @@ public class JLANFileServerConfiguration extends ServerConfiguration {
         accessControlManager.setDebug(false);
         accessControlManager.initialize(this, new GenericConfigElement("aclManager"));
         secConfig.setAccessControlManager(accessControlManager);
-        secConfig.setJCEProvider("org.bouncycastle.jce.provider.BouncyCastleProvider");
         final UserAccountList userAccounts = new UserAccountList();
         secConfig.setUserAccounts(userAccounts);
 
