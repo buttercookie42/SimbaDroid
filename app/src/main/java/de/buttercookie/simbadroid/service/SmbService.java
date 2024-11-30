@@ -76,6 +76,10 @@ public class SmbService extends Service {
     private NsdManager.RegistrationListener mNsdRegistrationListener;
     private String mFriendlyAddress;
 
+    public record Status(boolean serviceRunning, boolean serverRunning, String friendlyAddress,
+                  String ipAddress) {
+    }
+
     private void setIsRunning(boolean isRunning) {
         if (mRunning != isRunning) {
             mRunning = isRunning;
@@ -167,6 +171,7 @@ public class SmbService extends Service {
         unregisterNsdService();
         unmonitorWifi();
         stopWifiTimeout();
+        updateUI();
         super.onDestroy();
     }
 
@@ -175,6 +180,7 @@ public class SmbService extends Service {
     }
 
     private void updateServerState() {
+        updateUI();
         if (mWifiAvailable) {
             stopWifiTimeout();
         } else {
@@ -287,6 +293,7 @@ public class SmbService extends Service {
                 @Override
                 public void onServiceRegistered(NsdServiceInfo serviceInfo) {
                     mFriendlyAddress = getFriendlyAddress(serviceInfo);
+                    updateUI();
                 }
 
                 @Override
@@ -297,6 +304,7 @@ public class SmbService extends Service {
                 @Override
                 public void onServiceUnregistered(NsdServiceInfo serviceInfo) {
                     mFriendlyAddress = null;
+                    updateUI();
                 }
 
                 @Override
@@ -403,5 +411,10 @@ public class SmbService extends Service {
                                     Toast.LENGTH_SHORT).show())
                             .run(() -> context.startService(intent));
                 }));
+    }
+
+    private void updateUI() {
+        boolean serviceStarted = mServer != null && mServer.running();
+        Status status = new Status(mRunning, serviceStarted, mFriendlyAddress, mIpAddress);
     }
 }

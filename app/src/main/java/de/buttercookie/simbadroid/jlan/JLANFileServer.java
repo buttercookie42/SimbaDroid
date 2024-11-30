@@ -44,4 +44,8 @@ public class JLANFileServer {
         }
         mStarted = false;
     }
+
+    public boolean running() {
+        return mStarted;
+    }
 }
