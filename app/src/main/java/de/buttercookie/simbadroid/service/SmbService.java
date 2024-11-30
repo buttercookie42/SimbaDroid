@@ -52,6 +52,8 @@ public class SmbService extends Service {
     private static final int NOTIFICATION_ID = 1;
     private static final long WIFI_UNAVAILABLE_STARTUP_TIMEOUT_MS = 5 * 60 * 1000;
     private static final long WIFI_UNAVAILABLE_TIMEOUT_MS = 20 * 60 * 1000;
+    private static final String UNC_PREFIX = "\\\uFEFF\\";
+    private static final String MDNS_SUFFIX = ".local";
 
     private final IBinder binder = new SmbBinder();
 
@@ -251,7 +253,8 @@ public class SmbService extends Service {
                 public void onAvailable(@NonNull Network network) {
                     LinkProperties props = connMgr.getLinkProperties(network);
                     if (props != null) {
-                        mIpAddress = props.getLinkAddresses().get(0).getAddress().getHostAddress();
+                        mIpAddress = UNC_PREFIX +
+                                props.getLinkAddresses().get(0).getAddress().getHostAddress();
                     }
                     connMgr.bindProcessToNetwork(network);
                     setWifiAvailable(true);
@@ -328,7 +331,7 @@ public class SmbService extends Service {
     }
 
     private String getFriendlyAddress(NsdServiceInfo serviceInfo) {
-        return serviceInfo.getServiceName() + ".local";
+        return UNC_PREFIX + serviceInfo.getServiceName() + MDNS_SUFFIX;
     }
 
     private void createNotificationChannel() {
