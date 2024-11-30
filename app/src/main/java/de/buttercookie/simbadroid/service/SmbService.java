@@ -416,5 +416,10 @@ public class SmbService extends Service {
     private void updateUI() {
         boolean serviceStarted = mServer != null && mServer.running();
         Status status = new Status(mRunning, serviceStarted, mFriendlyAddress, mIpAddress);
+
+        var liveData = SmbServiceStatusLiveData.get();
+        if (!status.equals(liveData.getValue())) {
+            liveData.postValue(status);
+        }
     }
 }

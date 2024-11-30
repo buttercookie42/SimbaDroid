@@ -24,6 +24,7 @@ import de.buttercookie.simbadroid.databinding.ActivityMainBinding;
 import de.buttercookie.simbadroid.permissions.Permissions;
 import de.buttercookie.simbadroid.service.SmbService;
 import de.buttercookie.simbadroid.service.SmbServiceConnection;
+import de.buttercookie.simbadroid.service.SmbServiceStatusLiveData;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private ActivityMainBinding binding;
@@ -59,6 +60,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        SmbServiceStatusLiveData.get().observe(this, status -> {
+            if (!status.serviceRunning()) {
+                binding.serviceStatus.setText(R.string.status_server_off);
+            } else if (!status.serverRunning()) {
+                binding.serviceStatus.setText(R.string.message_server_waiting_wifi);
+            } else {
+                binding.serviceStatus.setText(R.string.message_server_running);
+            }
         });
     }
 
