@@ -18,6 +18,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ServiceInfo;
 import android.net.ConnectivityManager;
+import android.net.LinkProperties;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
@@ -70,6 +71,7 @@ public class SmbService extends Service {
     private ConnectivityManager.NetworkCallback mNetCallback;
     private Runnable mWifiTimeoutRunnable;
     private long mWifiTimeoutMs = WIFI_UNAVAILABLE_STARTUP_TIMEOUT_MS;
+    private String mIpAddress;
 
     private NsdManager.RegistrationListener mNsdRegistrationListener;
     private String mServiceName;
@@ -241,12 +243,17 @@ public class SmbService extends Service {
             mNetCallback = new ConnectivityManager.NetworkCallback() {
                 @Override
                 public void onAvailable(@NonNull Network network) {
+                    LinkProperties props = connMgr.getLinkProperties(network);
+                    if (props != null) {
+                        mIpAddress = props.getLinkAddresses().get(0).getAddress().getHostAddress();
+                    }
                     connMgr.bindProcessToNetwork(network);
                     setWifiAvailable(true);
                 }
 
                 @Override
                 public void onLost(@NonNull Network network) {
+                    mIpAddress = null;
                     setWifiAvailable(false);
                     connMgr.bindProcessToNetwork(null);
                 }
