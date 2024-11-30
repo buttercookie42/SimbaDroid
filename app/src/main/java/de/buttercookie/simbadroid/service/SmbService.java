@@ -18,6 +18,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ServiceInfo;
 import android.net.ConnectivityManager;
+import android.net.LinkAddress;
 import android.net.LinkProperties;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -38,6 +39,9 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.ServiceCompat;
 
 import org.filesys.smb.TcpipSMB;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import de.buttercookie.simbadroid.MainActivity;
 import de.buttercookie.simbadroid.R;
@@ -253,8 +257,14 @@ public class SmbService extends Service {
                 public void onAvailable(@NonNull Network network) {
                     LinkProperties props = connMgr.getLinkProperties(network);
                     if (props != null) {
-                        mIpAddress = UNC_PREFIX +
-                                props.getLinkAddresses().get(0).getAddress().getHostAddress();
+                        List<LinkAddress> filteredAddresses =
+                                filterOutLinkLocalAddresses(props.getLinkAddresses());
+                        if (!filteredAddresses.isEmpty()) {
+                            mIpAddress = UNC_PREFIX +
+                                    filteredAddresses.get(0).getAddress().getHostAddress();
+                        } else {
+                            mIpAddress = "";
+                        }
                     }
                     connMgr.bindProcessToNetwork(network);
                     setWifiAvailable(true);
@@ -283,6 +293,12 @@ public class SmbService extends Service {
             connMgr.bindProcessToNetwork(null);
             mNetCallback = null;
         }
+    }
+
+    private List<LinkAddress> filterOutLinkLocalAddresses(List<LinkAddress> addresses) {
+        return addresses.stream().filter(
+                linkAddress -> !linkAddress.getAddress().isLinkLocalAddress())
+                .collect(Collectors.toList());
     }
 
     private void registerNsdService() {
