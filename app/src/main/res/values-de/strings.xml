@@ -14,4 +14,5 @@
     <string name="shortcut_start_server_short">Starten</string>
     <string name="shortcut_start_server_long">Server starten</string>
     <string name="status_server_off">Der SMB-Server ist nicht aktiv.</string>
+    <string name="status_server_running">Der SMB-Server läuft.\nUm auf deine Dateien zuzugreifen, besuche <b>%1$s</b> oder <b>%2$s</b>.</string>
 </resources>

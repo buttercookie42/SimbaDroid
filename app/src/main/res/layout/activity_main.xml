@@ -40,7 +40,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/button_layout"
         app:layout_constraintVertical_bias="0"
-        android:paddingHorizontal="10dp"
+        android:paddingHorizontal="40dp"
         android:paddingVertical="10dp"
         android:text="@string/status_server_off"/>
 

@@ -4,6 +4,8 @@
 
 package de.buttercookie.simbadroid;
 
+import static de.buttercookie.simbadroid.util.StyledTextUtils.getStyledText;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import org.apache.commons.lang3.StringUtils;
 
 import de.buttercookie.simbadroid.databinding.ActivityMainBinding;
 import de.buttercookie.simbadroid.permissions.Permissions;
@@ -67,8 +71,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 binding.serviceStatus.setText(R.string.status_server_off);
             } else if (!status.serverRunning()) {
                 binding.serviceStatus.setText(R.string.message_server_waiting_wifi);
-            } else {
+            } else if (StringUtils.isBlank(status.friendlyAddress()) ||
+                    StringUtils.isBlank(status.ipAddress())) {
                 binding.serviceStatus.setText(R.string.message_server_running);
+            } else {
+                binding.serviceStatus.setText(getStyledText(this,
+                        R.string.status_server_running,
+                        status.friendlyAddress(),
+                        status.ipAddress()));
             }
         });
     }

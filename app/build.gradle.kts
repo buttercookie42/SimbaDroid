@@ -95,6 +95,7 @@ dependencies {
         exclude(group = "org.bouncycastle", module = "bcprov-jdk15on")
     }
     implementation(libs.bouncycastle.bcprov)
+    implementation(libs.apache.commons.lang)
 }
 
 fun ApkSigningConfig.checkExternalSigningConfig(): Boolean {

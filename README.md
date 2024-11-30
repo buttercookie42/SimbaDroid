@@ -39,7 +39,8 @@ from [the Noun Project](https://thenounproject.com/)  under the
 
 _JFileServer_ is used under the LGPL-3.0 license (see lgpl-3.0.md and gpl-3.0.md)
 
-_libsu_ and the _Android Support Library_ are used under the Apache License, Version 2.0
+_libsu_, _Apache Commons Lang_ and the _Android Support Library_ are used under the Apache License,
+Version 2.0
 
 _Bouncy Castle_ is used under the following license:
 
@@ -60,4 +61,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
 NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
 DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
-OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+### Notices
+#### Apache Commons Lang
+
+Apache Commons Lang
+
+Copyright 2001-2024 The Apache Software Foundation
+
+This product includes software developed at
+The Apache Software Foundation (https://www.apache.org/).
