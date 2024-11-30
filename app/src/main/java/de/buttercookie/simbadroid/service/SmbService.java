@@ -74,7 +74,7 @@ public class SmbService extends Service {
     private String mIpAddress;
 
     private NsdManager.RegistrationListener mNsdRegistrationListener;
-    private String mServiceName;
+    private String mFriendlyAddress;
 
     private void setIsRunning(boolean isRunning) {
         if (mRunning != isRunning) {
@@ -286,7 +286,7 @@ public class SmbService extends Service {
             mNsdRegistrationListener = new NsdManager.RegistrationListener() {
                 @Override
                 public void onServiceRegistered(NsdServiceInfo serviceInfo) {
-                    mServiceName = serviceInfo.getServiceName();
+                    mFriendlyAddress = getFriendlyAddress(serviceInfo);
                 }
 
                 @Override
@@ -296,7 +296,7 @@ public class SmbService extends Service {
 
                 @Override
                 public void onServiceUnregistered(NsdServiceInfo serviceInfo) {
-                    mServiceName = null;
+                    mFriendlyAddress = null;
                 }
 
                 @Override
@@ -317,6 +317,10 @@ public class SmbService extends Service {
             nsdManager.unregisterService(mNsdRegistrationListener);
             mNsdRegistrationListener = null;
         }
+    }
+
+    private String getFriendlyAddress(NsdServiceInfo serviceInfo) {
+        return serviceInfo.getServiceName() + ".local";
     }
 
     private void createNotificationChannel() {
