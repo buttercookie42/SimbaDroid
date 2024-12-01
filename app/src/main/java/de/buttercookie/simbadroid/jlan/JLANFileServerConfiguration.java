@@ -5,10 +5,12 @@
 package de.buttercookie.simbadroid.jlan;
 
 import android.content.Context;
+import android.net.LinkAddress;
 import android.os.Build;
 import android.os.Environment;
 
 import org.filesys.debug.DebugConfigSection;
+import org.filesys.netbios.NetworkSettings;
 import org.filesys.server.SrvSession;
 import org.filesys.server.auth.ClientInfo;
 import org.filesys.server.auth.ISMBAuthenticator;
@@ -30,7 +32,14 @@ import org.filesys.smb.server.SMBConfigSection;
 import org.filesys.smb.server.SMBSrvSession;
 import org.springframework.extensions.config.element.GenericConfigElement;
 
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.EnumSet;
+import java.util.List;
 
 import de.buttercookie.simbadroid.util.FileUtils;
 
@@ -114,6 +123,38 @@ public class JLANFileServerConfiguration extends ServerConfiguration {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             smbConfig.setDisableNIOCode(true);
         }
+    }
+
+    void setBindAddress(LinkAddress bindAddress) throws InvalidConfigurationException {
+        final SMBConfigSection smbConfig =
+                (SMBConfigSection) getConfigSection(SMBConfigSection.SectionName);
+
+        smbConfig.setSMBBindAddress(bindAddress.getAddress());
+        smbConfig.setNetBIOSBindAddress(bindAddress.getAddress());
+
+        String broadcastAddress = getBroadcastAddress(bindAddress);
+        smbConfig.setBroadcastMask(broadcastAddress);
+        NetworkSettings.setBroadcastMask(broadcastAddress);
+    }
+
+    private static String getBroadcastAddress(LinkAddress address) {
+        String broadcastAddress = null;
+        if (address.getAddress() instanceof Inet4Address v4addr) {
+            try {
+                InterfaceAddress ifAddr = convertToInterfaceAddress(v4addr);
+                broadcastAddress = ifAddr.getBroadcast().getHostAddress();
+            } catch (SocketException ignored) {}
+        } else if (address.getAddress() instanceof Inet6Address) {
+            broadcastAddress = "ff02::1";
+        }
+        return broadcastAddress;
+    }
+
+    private static InterfaceAddress convertToInterfaceAddress(InetAddress address) throws SocketException {
+        List<InterfaceAddress> interfaceAddresses =
+                NetworkInterface.getByInetAddress(address).getInterfaceAddresses();
+        return interfaceAddresses.stream().reduce((addr1, addr2) ->
+                addr2.getAddress().equals(address) ? addr2 : addr1).get();
     }
 
     private static void addShare(DiskInterface diskInterface,

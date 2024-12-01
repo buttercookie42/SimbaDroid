@@ -198,6 +198,7 @@ public class SmbService extends Service {
 
         if (mRunning && isWifiAvailable()) {
             Log.d(LOGTAG, "Starting SMB server");
+            mServer.setBindAddress(mLinkAddress);
             mServer.start();
             getSystemService(NotificationManager.class)
                     .notify(NOTIFICATION_ID, getServiceNotification());

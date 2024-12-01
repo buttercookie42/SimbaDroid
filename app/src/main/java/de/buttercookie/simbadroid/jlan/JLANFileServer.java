@@ -5,14 +5,15 @@
 package de.buttercookie.simbadroid.jlan;
 
 import android.content.Context;
+import android.net.LinkAddress;
 
 import org.filesys.netbios.server.NetBIOSNameServer;
 import org.filesys.server.NetworkServer;
-import org.filesys.server.config.ServerConfiguration;
+import org.filesys.server.config.InvalidConfigurationException;
 import org.filesys.smb.server.SMBServer;
 
 public class JLANFileServer {
-    ServerConfiguration mCfg;
+    JLANFileServerConfiguration mCfg;
     boolean mStarted = false;
 
     public JLANFileServer(Context context, String hostName) throws Exception {
@@ -47,5 +48,13 @@ public class JLANFileServer {
 
     public boolean running() {
         return mStarted;
+    }
+
+    public void setBindAddress(LinkAddress address) {
+        try {
+            mCfg.setBindAddress(address);
+        } catch (InvalidConfigurationException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
