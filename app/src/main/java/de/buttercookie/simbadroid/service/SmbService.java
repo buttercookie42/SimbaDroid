@@ -41,6 +41,7 @@ import androidx.core.app.ServiceCompat;
 import org.filesys.smb.TcpipSMB;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import de.buttercookie.simbadroid.MainActivity;
@@ -68,7 +69,7 @@ public class SmbService extends Service {
     }
 
     private boolean mRunning = false;
-    private boolean mWifiAvailable = false;
+    private LinkAddress mLinkAddress = null;
 
     private JLANFileServer mServer;
     private PowerManager.WakeLock mWakeLock;
@@ -77,7 +78,6 @@ public class SmbService extends Service {
     private ConnectivityManager.NetworkCallback mNetCallback;
     private Runnable mWifiTimeoutRunnable;
     private long mWifiTimeoutMs = WIFI_UNAVAILABLE_STARTUP_TIMEOUT_MS;
-    private String mIpAddress;
 
     private NsdManager.RegistrationListener mNsdRegistrationListener;
     private String mFriendlyAddress;
@@ -93,10 +93,10 @@ public class SmbService extends Service {
         }
     }
 
-    private void setWifiAvailable(boolean wifiAvailable) {
-        if (mWifiAvailable != wifiAvailable) {
-            mWifiAvailable = wifiAvailable;
-            if (wifiAvailable) {
+    private void setLinkAddress(LinkAddress address) {
+        if (!Objects.equals(mLinkAddress, address)) {
+            mLinkAddress = address;
+            if (address != null) {
                 mWifiTimeoutMs = WIFI_UNAVAILABLE_TIMEOUT_MS;
             }
             updateServerState();
@@ -182,12 +182,12 @@ public class SmbService extends Service {
     }
 
     public boolean isWifiAvailable() {
-        return mWifiAvailable;
+        return mLinkAddress != null;
     }
 
     private void updateServerState() {
         updateUI();
-        if (mWifiAvailable) {
+        if (isWifiAvailable()) {
             stopWifiTimeout();
         } else {
             startWifiTimeout();
@@ -197,7 +197,7 @@ public class SmbService extends Service {
             return;
         }
 
-        if (mRunning && mWifiAvailable) {
+        if (mRunning && isWifiAvailable()) {
             Log.d(LOGTAG, "Starting SMB server");
             mServer.start();
             getSystemService(NotificationManager.class)
@@ -206,7 +206,7 @@ public class SmbService extends Service {
         } else {
             Log.d(LOGTAG, "Stopping SMB server");
             mServer.stop();
-            if (!mWifiAvailable) {
+            if (!isWifiAvailable()) {
                 getSystemService(NotificationManager.class)
                         .notify(NOTIFICATION_ID, getServiceNotification());
             }
@@ -256,25 +256,24 @@ public class SmbService extends Service {
             mNetCallback = new ConnectivityManager.NetworkCallback() {
                 @Override
                 public void onAvailable(@NonNull Network network) {
+                    connMgr.bindProcessToNetwork(network);
                     LinkProperties props = connMgr.getLinkProperties(network);
                     if (props != null) {
                         List<LinkAddress> filteredAddresses =
                                 filterOutLinkLocalAddresses(props.getLinkAddresses());
                         if (!filteredAddresses.isEmpty()) {
-                            mIpAddress = UNC_PREFIX +
-                                    filteredAddresses.get(0).getAddress().getHostAddress();
+                            setLinkAddress(filteredAddresses.get(0));
                         } else {
-                            mIpAddress = "";
+                            setLinkAddress(null);
                         }
+                    } else {
+                        setLinkAddress(null);
                     }
-                    connMgr.bindProcessToNetwork(network);
-                    setWifiAvailable(true);
                 }
 
                 @Override
                 public void onLost(@NonNull Network network) {
-                    mIpAddress = null;
-                    setWifiAvailable(false);
+                    setLinkAddress(null);
                     connMgr.bindProcessToNetwork(null);
                 }
             };
@@ -289,7 +288,7 @@ public class SmbService extends Service {
     private void unmonitorWifi() {
         if (mNetCallback != null) {
             ConnectivityManager connMgr = getSystemService(ConnectivityManager.class);
-            mWifiAvailable = false;
+            mLinkAddress = null;
             connMgr.unregisterNetworkCallback(mNetCallback);
             connMgr.bindProcessToNetwork(null);
             mNetCallback = null;
@@ -382,7 +381,7 @@ public class SmbService extends Service {
 
     private @Nullable NotificationCompat.Action getStopAction() {
         NotificationCompat.Action action = null;
-        if (mWifiAvailable) {
+        if (isWifiAvailable()) {
             Intent stopIntent = new Intent(this, SmbService.class)
                     .setAction(ACTION_STOP);
             PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 0,
@@ -395,7 +394,7 @@ public class SmbService extends Service {
     }
 
     private String getServiceNotificationText() {
-        return mWifiAvailable ?
+        return isWifiAvailable() ?
                 getString(R.string.message_server_running) :
                 getString(R.string.message_server_waiting_wifi);
     }
@@ -435,8 +434,9 @@ public class SmbService extends Service {
 
     private void updateUI() {
         boolean serviceStarted = mServer != null && mServer.running();
-        Status status = new Status(mRunning, serviceStarted, mFriendlyAddress, mIpAddress);
-
+        String textualIp = mLinkAddress != null ?
+                UNC_PREFIX + mLinkAddress.getAddress().getHostAddress() : "";
+        Status status = new Status(mRunning, serviceStarted, mFriendlyAddress, textualIp);
         var liveData = SmbServiceStatusLiveData.get();
         if (!status.equals(liveData.getValue())) {
             liveData.postValue(status);
