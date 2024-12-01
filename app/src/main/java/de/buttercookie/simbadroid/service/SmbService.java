@@ -293,6 +293,8 @@ public class SmbService extends Service {
     private void registerNsdService() {
         if (mNsdRegistrationListener == null) {
             NsdServiceInfo serviceInfo = new NsdServiceInfo();
+            /* TODO: Try to ensure that the name used here (and as NetBIOS hostname, too) is
+                DNS-friendly */
             serviceInfo.setServiceName(getString(R.string.app_name));
             serviceInfo.setServiceType("_microsoft-ds._tcp.");
             serviceInfo.setPort(TcpipSMB.PORT);
@@ -300,6 +302,8 @@ public class SmbService extends Service {
             mNsdRegistrationListener = new NsdManager.RegistrationListener() {
                 @Override
                 public void onServiceRegistered(NsdServiceInfo serviceInfo) {
+                    /* TODO: Try and handle name collisions, because the default alternative names
+                        chosen (with e.g. a " (2)" suffix) aren't necessarily plain-DNS-friendly. */
                     mFriendlyAddress = getFriendlyAddress(serviceInfo);
                     updateUI();
                 }

@@ -126,6 +126,7 @@ public class JLANFileServerConfiguration extends ServerConfiguration {
         final GenericConfigElement localPathConfig = new GenericConfigElement("LocalPath");
         localPathConfig.setValue(sharePath);
         driverConfig.addChild(localPathConfig);
+        // TODO: Try setting the trashcan path to the corresponding external files dir
         DiskDeviceContext diskDeviceContext =
                 (DiskDeviceContext) diskInterface.createContext(shareName, driverConfig);
         diskDeviceContext.setShareName(shareName);
