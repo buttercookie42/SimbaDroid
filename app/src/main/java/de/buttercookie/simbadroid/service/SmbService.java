@@ -40,6 +40,7 @@ import androidx.core.app.ServiceCompat;
 
 import org.filesys.smb.TcpipSMB;
 
+import java.net.Inet4Address;
 import java.util.Objects;
 
 import de.buttercookie.simbadroid.MainActivity;
@@ -260,6 +261,7 @@ public class SmbService extends Service {
                     LinkProperties props = connMgr.getLinkProperties(network);
                     if (props != null) {
                         var sortedAddresses = props.getLinkAddresses().stream()
+                                .filter(address -> address.getAddress() instanceof Inet4Address)
                                 .sorted(new IpSort.LinkAddressComparator(false));
                         setLinkAddress(sortedAddresses.findFirst().orElse(null));
                     } else {
