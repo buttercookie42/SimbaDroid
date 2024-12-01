@@ -40,14 +40,13 @@ import androidx.core.app.ServiceCompat;
 
 import org.filesys.smb.TcpipSMB;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import de.buttercookie.simbadroid.MainActivity;
 import de.buttercookie.simbadroid.R;
 import de.buttercookie.simbadroid.jlan.JLANFileServer;
 import de.buttercookie.simbadroid.permissions.Permissions;
+import de.buttercookie.simbadroid.util.IpSort;
 import de.buttercookie.simbadroid.util.ThreadUtils;
 
 public class SmbService extends Service {
@@ -259,13 +258,9 @@ public class SmbService extends Service {
                     connMgr.bindProcessToNetwork(network);
                     LinkProperties props = connMgr.getLinkProperties(network);
                     if (props != null) {
-                        List<LinkAddress> filteredAddresses =
-                                filterOutLinkLocalAddresses(props.getLinkAddresses());
-                        if (!filteredAddresses.isEmpty()) {
-                            setLinkAddress(filteredAddresses.get(0));
-                        } else {
-                            setLinkAddress(null);
-                        }
+                        var sortedAddresses = props.getLinkAddresses().stream()
+                                .sorted(new IpSort.LinkAddressComparator(false));
+                        setLinkAddress(sortedAddresses.findFirst().orElse(null));
                     } else {
                         setLinkAddress(null);
                     }
@@ -293,12 +288,6 @@ public class SmbService extends Service {
             connMgr.bindProcessToNetwork(null);
             mNetCallback = null;
         }
-    }
-
-    private List<LinkAddress> filterOutLinkLocalAddresses(List<LinkAddress> addresses) {
-        return addresses.stream().filter(
-                linkAddress -> !linkAddress.getAddress().isLinkLocalAddress())
-                .collect(Collectors.toList());
     }
 
     private void registerNsdService() {
