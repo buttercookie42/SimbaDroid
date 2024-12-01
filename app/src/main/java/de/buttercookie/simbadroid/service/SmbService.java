@@ -212,6 +212,7 @@ public class SmbService extends Service {
             }
             unregisterNsdService();
         }
+        updateUI();
     }
 
     private void startWifiTimeout() {
