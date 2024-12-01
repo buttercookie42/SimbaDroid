@@ -18,13 +18,18 @@ public class JLANFileServer {
 
     public JLANFileServer(Context context, String hostName) throws Exception {
         mCfg = new JLANFileServerConfiguration(context, hostName);
-        mCfg.addServer(new NetBIOSNameServer(mCfg));
-        mCfg.addServer(new SMBServer(mCfg));
     }
 
     public void start() {
         if (mStarted) {
             return;
+        }
+
+        try {
+            mCfg.addServer(new NetBIOSNameServer(mCfg));
+            mCfg.addServer(new SMBServer(mCfg));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         for (int i = 0; i < mCfg.numberOfServers(); i++) {
@@ -43,6 +48,7 @@ public class JLANFileServer {
             NetworkServer server = mCfg.getServer(i);
             server.shutdownServer(false);
         }
+        mCfg.removeAllServers();
         mStarted = false;
     }
 
