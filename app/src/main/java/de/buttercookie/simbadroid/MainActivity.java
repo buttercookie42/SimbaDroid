@@ -71,13 +71,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 binding.serviceStatus.setText(R.string.status_server_off);
             } else if (!status.serverRunning()) {
                 binding.serviceStatus.setText(R.string.message_server_waiting_wifi);
-            } else if (StringUtils.isBlank(status.friendlyAddress()) ||
+            } else if (StringUtils.isBlank(status.mdnsAddress()) ||
                     StringUtils.isBlank(status.ipAddress())) {
                 binding.serviceStatus.setText(R.string.message_server_running);
             } else {
                 binding.serviceStatus.setText(getStyledText(this,
                         R.string.status_server_running,
-                        status.friendlyAddress(),
+                        status.mdnsAddress(),
+                        status.netBiosAddress(),
                         status.ipAddress()));
             }
         });

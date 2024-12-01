@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">SimbaDroid</string>
+    <!-- Only use letters, digits and hyphens, and don't use more than 15 characters if you still
+     care about NetBIOS name resolution -->
+    <string name="dns_name">simbadroid</string>
 
     <string name="button_start_server">Start server</string>
     <string name="button_stop_server">Stop server</string>
@@ -18,5 +21,5 @@
     <string name="shortcut_start_server_long">Start server</string>
 
     <string name="status_server_off">The SMB server is not active.</string>
-    <string name="status_server_running">The SMB server is running.\nTo access your files, visit <b>%1$s</b> or <b>%2$s</b>.</string>
+    <string name="status_server_running">The SMB server is running.\nTo access your files, visit <b>%1$s</b>, <b>%2$s</b> or <b>%3$s</b>.</string>
 </resources>

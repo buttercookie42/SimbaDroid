@@ -79,10 +79,10 @@ public class SmbService extends Service {
     private long mWifiTimeoutMs = WIFI_UNAVAILABLE_STARTUP_TIMEOUT_MS;
 
     private NsdManager.RegistrationListener mNsdRegistrationListener;
-    private String mFriendlyAddress;
+    private String mMdnsAddress;
 
-    public record Status(boolean serviceRunning, boolean serverRunning, String friendlyAddress,
-                  String ipAddress) {
+    public record Status(boolean serviceRunning, boolean serverRunning, String mdnsAddress,
+                         String netBiosAddress, String ipAddress) {
     }
 
     private void setIsRunning(boolean isRunning) {
@@ -124,7 +124,7 @@ public class SmbService extends Service {
         }
 
         try {
-            mServer = new JLANFileServer(this, getString(R.string.app_name));
+            mServer = new JLANFileServer(this, getString(R.string.dns_name));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -294,9 +294,7 @@ public class SmbService extends Service {
     private void registerNsdService() {
         if (mNsdRegistrationListener == null) {
             NsdServiceInfo serviceInfo = new NsdServiceInfo();
-            /* TODO: Try to ensure that the name used here (and as NetBIOS hostname, too) is
-                DNS-friendly */
-            serviceInfo.setServiceName(getString(R.string.app_name));
+            serviceInfo.setServiceName(getString(R.string.dns_name));
             serviceInfo.setServiceType("_microsoft-ds._tcp.");
             serviceInfo.setPort(TcpipSMB.PORT);
 
@@ -305,7 +303,7 @@ public class SmbService extends Service {
                 public void onServiceRegistered(NsdServiceInfo serviceInfo) {
                     /* TODO: Try and handle name collisions, because the default alternative names
                         chosen (with e.g. a " (2)" suffix) aren't necessarily plain-DNS-friendly. */
-                    mFriendlyAddress = getFriendlyAddress(serviceInfo);
+                    mMdnsAddress = getMdnsAddress(serviceInfo);
                     updateUI();
                 }
 
@@ -316,7 +314,7 @@ public class SmbService extends Service {
 
                 @Override
                 public void onServiceUnregistered(NsdServiceInfo serviceInfo) {
-                    mFriendlyAddress = null;
+                    mMdnsAddress = null;
                     updateUI();
                 }
 
@@ -340,7 +338,7 @@ public class SmbService extends Service {
         }
     }
 
-    private String getFriendlyAddress(NsdServiceInfo serviceInfo) {
+    private String getMdnsAddress(NsdServiceInfo serviceInfo) {
         return UNC_PREFIX + serviceInfo.getServiceName() + MDNS_SUFFIX;
     }
 
@@ -428,9 +426,13 @@ public class SmbService extends Service {
 
     private void updateUI() {
         boolean serviceStarted = mServer != null && mServer.running();
+        String netBiosAddress = UNC_PREFIX + getString(R.string.dns_name);
         String textualIp = mLinkAddress != null ?
                 UNC_PREFIX + mLinkAddress.getAddress().getHostAddress() : "";
-        Status status = new Status(mRunning, serviceStarted, mFriendlyAddress, textualIp);
+
+        Status status = new Status(mRunning, serviceStarted,
+                mMdnsAddress, netBiosAddress, textualIp);
+
         var liveData = SmbServiceStatusLiveData.get();
         if (!status.equals(liveData.getValue())) {
             liveData.postValue(status);
