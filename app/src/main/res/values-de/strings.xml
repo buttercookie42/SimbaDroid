@@ -3,14 +3,14 @@
     <string name="app_name">SimbaDroid</string>
     <string name="button_start_server">Server starten</string>
     <string name="button_stop_server">Server anhalten</string>
-    <string name="toast_need_storage_permission">Berechtigung für Dateizugriff benötigt</string>
     <string name="notification_channel_name">SMB-Server</string>
     <string name="notification_channel_description">SMB Serverdienst-Benachrichtigung</string>
     <string name="message_server_running">Der SMB-Server läuft.</string>
-    <string name="toast_error_starting_server">Fehler beim Starten des Servers</string>
-    <string name="toast_error_no_wifi">Der Server benötigt eine aktive WLAN-Verbindung.</string>
     <string name="message_server_waiting_wifi">Warte auf WLAN-Verbindung…</string>
     <string name="notification_action_stop">Server anhalten</string>
+    <string name="toast_need_storage_permission">Berechtigung für Dateizugriff benötigt</string>
+    <string name="toast_error_starting_server">Fehler beim Starten des Servers</string>
+    <string name="toast_error_no_wifi">Der Server benötigt eine aktive WLAN-Verbindung.</string>
     <string name="shortcut_start_server_short">Starten</string>
     <string name="shortcut_start_server_long">Server starten</string>
     <string name="status_server_off">Der SMB-Server ist nicht aktiv.</string>
