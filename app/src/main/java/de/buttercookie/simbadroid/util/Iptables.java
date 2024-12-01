@@ -29,6 +29,8 @@ public class Iptables {
 
     private static String hasWait;
 
+    private Iptables() {}
+
     private static boolean shellCommand(String command) {
         Shell.Result result = Shell.cmd(command).exec();
         for (String message : result.getOut()) {

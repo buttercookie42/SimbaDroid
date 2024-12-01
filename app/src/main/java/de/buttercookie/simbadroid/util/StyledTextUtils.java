@@ -21,6 +21,8 @@ import java.util.Arrays;
 
 public class StyledTextUtils {
 
+    private StyledTextUtils() {}
+
     public static CharSequence getStyledText(Context context, @StringRes int id,
                                              Object... formatArgs) {
         return getStyledCharSequence(context.getText(id), formatArgs);

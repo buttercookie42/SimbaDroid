@@ -30,6 +30,8 @@ public final class ThreadUtils {
 
     private static volatile Thread sBackgroundThread;
 
+    private ThreadUtils() {}
+
     public static void dumpAllStackTraces() {
         Log.w(LOGTAG, "Dumping ALL the threads!");
         Map<Thread, StackTraceElement[]> allStacks = Thread.getAllStackTraces();

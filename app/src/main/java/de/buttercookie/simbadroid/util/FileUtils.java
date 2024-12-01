@@ -16,6 +16,9 @@ import androidx.annotation.Nullable;
 import java.io.File;
 
 public class FileUtils {
+
+    private FileUtils() {}
+
     public static String getStoragePath(final @NonNull Context context) {
         String storagePath = getSdCardStoragePath(context, null);
         if (storagePath == null) {
