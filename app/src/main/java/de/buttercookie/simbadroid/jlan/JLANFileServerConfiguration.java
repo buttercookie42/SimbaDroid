@@ -87,15 +87,17 @@ public class JLANFileServerConfiguration extends ServerConfiguration {
 
         // Shares
         FilesystemsConfigSection filesysConfig = new FilesystemsConfigSection(this);
-        DiskInterface diskInterface = new DiskDriver();
+        DiskInterface diskInterface = new SimbaDiskDriver();
         File sdCard = SdCard.findSdCardPath(context, null);
         if (sdCard != null) {
             addShare(diskInterface, this, filesysConfig, secConfig,
-                    "External", sdCard.getAbsolutePath(), null);
+                    "External", sdCard.getAbsolutePath(),
+                    FileUtils.getTrashcanPath(context, sdCard).getAbsolutePath());
         }
         File internal = Environment.getExternalStorageDirectory();
         addShare(diskInterface, this, filesysConfig, secConfig,
-                "Internal", internal.getAbsolutePath(), null);
+                "Internal", internal.getAbsolutePath(),
+                FileUtils.getTrashcanPath(context, internal).getAbsolutePath());
 
         // SMB
         SMBConfigSection smbConfig = new SMBConfigSection(this);

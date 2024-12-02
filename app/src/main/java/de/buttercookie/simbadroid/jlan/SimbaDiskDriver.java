@@ -6,12 +6,16 @@ package de.buttercookie.simbadroid.jlan;
 
 import android.os.StatFs;
 
+import org.filesys.server.core.DeviceContextException;
 import org.filesys.server.filesys.DiskDeviceContext;
 import org.filesys.server.filesys.DiskSizeInterface;
 import org.filesys.server.filesys.SrvDiskInfo;
+import org.filesys.smb.server.disk.JavaNIODeviceContext;
 import org.filesys.smb.server.disk.JavaNIODiskDriver;
+import org.springframework.extensions.config.ConfigElement;
 
-public class DiskDriver extends JavaNIODiskDriver implements DiskSizeInterface {
+public class SimbaDiskDriver extends JavaNIODiskDriver implements DiskSizeInterface {
+
     private static final int BLOCK_SIZE = 512;
 
     @Override
@@ -22,5 +26,11 @@ public class DiskDriver extends JavaNIODiskDriver implements DiskSizeInterface {
         diskDev.setBlocksPerAllocationUnit(statFs.getBlockSizeLong() / BLOCK_SIZE);
         diskDev.setTotalUnits(statFs.getBlockCountLong());
         diskDev.setFreeUnits(statFs.getAvailableBlocksLong());
+    }
+
+    @Override
+    protected JavaNIODeviceContext createJavaNIODeviceContext(String shareName, ConfigElement args)
+            throws DeviceContextException {
+        return new SimbaDiskDeviceContext(shareName, args);
     }
 }
