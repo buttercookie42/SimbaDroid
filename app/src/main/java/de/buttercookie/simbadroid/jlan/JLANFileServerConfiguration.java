@@ -9,6 +9,8 @@ import android.net.LinkAddress;
 import android.os.Build;
 import android.os.Environment;
 
+import androidx.annotation.Nullable;
+
 import org.filesys.debug.DebugConfigSection;
 import org.filesys.netbios.NetworkSettings;
 import org.filesys.server.SrvSession;
@@ -89,10 +91,11 @@ public class JLANFileServerConfiguration extends ServerConfiguration {
         File sdCard = SdCard.findSdCardPath(context, null);
         if (sdCard != null) {
             addShare(diskInterface, this, filesysConfig, secConfig,
-                    "External", sdCard.getAbsolutePath());
+                    "External", sdCard.getAbsolutePath(), null);
         }
+        File internal = Environment.getExternalStorageDirectory();
         addShare(diskInterface, this, filesysConfig, secConfig,
-                "Internal", Environment.getExternalStorageDirectory().toString());
+                "Internal", internal.getAbsolutePath(), null);
 
         // SMB
         SMBConfigSection smbConfig = new SMBConfigSection(this);
@@ -163,13 +166,18 @@ public class JLANFileServerConfiguration extends ServerConfiguration {
                                  ServerConfiguration serverConfig,
                                  FilesystemsConfigSection filesysConfig,
                                  SecurityConfigSection secConfig,
-                                 String shareName, String sharePath)
+                                 String shareName, String sharePath, @Nullable String trashcanPath)
             throws DeviceContextException {
         final GenericConfigElement driverConfig = new GenericConfigElement("driver");
         final GenericConfigElement localPathConfig = new GenericConfigElement("LocalPath");
         localPathConfig.setValue(sharePath);
         driverConfig.addChild(localPathConfig);
-        // TODO: Try setting the trashcan path to the corresponding external files dir
+        if (trashcanPath != null) {
+            final GenericConfigElement trashcanPathConfig =
+                    new GenericConfigElement("TrashcanPath");
+            trashcanPathConfig.setValue(trashcanPath);
+            driverConfig.addChild(trashcanPathConfig);
+        }
         DiskDeviceContext diskDeviceContext =
                 (DiskDeviceContext) diskInterface.createContext(shareName, driverConfig);
         diskDeviceContext.setShareName(shareName);
