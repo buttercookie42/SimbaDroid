@@ -32,6 +32,7 @@ import org.filesys.smb.server.SMBConfigSection;
 import org.filesys.smb.server.SMBSrvSession;
 import org.springframework.extensions.config.element.GenericConfigElement;
 
+import java.io.File;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -42,6 +43,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import de.buttercookie.simbadroid.util.FileUtils;
+import de.buttercookie.simbadroid.util.SdCard;
 
 public class JLANFileServerConfiguration extends ServerConfiguration {
     private static final int DefaultThreadPoolInit = 6;
@@ -84,10 +86,10 @@ public class JLANFileServerConfiguration extends ServerConfiguration {
         // Shares
         FilesystemsConfigSection filesysConfig = new FilesystemsConfigSection(this);
         DiskInterface diskInterface = new DiskDriver();
-        String sdCardPath = FileUtils.getSdCardStoragePath(context, null);
-        if (sdCardPath != null) {
+        File sdCard = SdCard.findSdCardPath(context, null);
+        if (sdCard != null) {
             addShare(diskInterface, this, filesysConfig, secConfig,
-                    "External", sdCardPath);
+                    "External", sdCard.getAbsolutePath());
         }
         addShare(diskInterface, this, filesysConfig, secConfig,
                 "Internal", Environment.getExternalStorageDirectory().toString());
