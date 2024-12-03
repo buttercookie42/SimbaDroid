@@ -6,6 +6,7 @@
 package de.buttercookie.simbadroid.util;
 
 import android.content.Context;
+import android.os.Environment;
 
 import androidx.annotation.NonNull;
 
@@ -19,9 +20,18 @@ public class FileUtils {
     private FileUtils() {}
 
     public static File getTrashcanPath(Context context, @NonNull File baseVolume) {
-        File[] externalStorage = context.getExternalCacheDirs();
-        File target = Arrays.stream(externalStorage).filter(file -> isAncestor(baseVolume, file))
-                .findFirst().orElse(baseVolume);
+        File target = baseVolume;
+        // The trashcan folder needs to reside on the same FileStore so that files can simply be
+        // moved into the trashcan by renaming them. On removable SD cards that's the case even when
+        // using the external cache directory (because a removable SD card is just one single file
+        // system), but on the internal storage the general part (getExternalStorageDirectory())
+        // resides on a different FileStore than the app-private directories, making the latter
+        // unsuitable as a trashcan location.
+        if (!Environment.isExternalStorageEmulated(baseVolume)) {
+            File[] externalStorage = context.getExternalCacheDirs();
+            target = Arrays.stream(externalStorage).filter(file -> isAncestor(baseVolume, file))
+                    .findFirst().orElse(baseVolume);
+        }
 
         target = new File(target, TRASHCAN_FOLDER);
         if (!ensureDir(target)) {
