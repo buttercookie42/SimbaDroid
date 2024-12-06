@@ -37,7 +37,9 @@ Portions of the code are provided under the Apache License, Version 2.0 (see apa
 from [the Noun Project](https://thenounproject.com/)  under the
 [CC BY 3.0 license](https://creativecommons.org/licenses/by/3.0/).
 
-_JFileServer_ is used under the LGPL-3.0 license (see lgpl-3.0.md and gpl-3.0.md)
+_JFileServer_ is used under the LGPL-3.0 license (see lgpl-3.0.md and gpl-3.0.md). Currently,
+SimbaDroid utilises a [forked version](https://github.com/buttercookie42/jfileserver) with some
+additional fixes.
 
 _libsu_, _Apache Commons Lang_ and the _Android Support Library_ are used under the Apache License,
 Version 2.0
