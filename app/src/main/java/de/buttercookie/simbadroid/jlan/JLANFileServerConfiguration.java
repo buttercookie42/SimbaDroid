@@ -26,6 +26,7 @@ import org.filesys.server.config.InvalidConfigurationException;
 import org.filesys.server.config.SecurityConfigSection;
 import org.filesys.server.config.ServerConfiguration;
 import org.filesys.server.core.DeviceContextException;
+import org.filesys.server.core.SharedDevice;
 import org.filesys.server.filesys.DiskDeviceContext;
 import org.filesys.server.filesys.DiskInterface;
 import org.filesys.server.filesys.DiskSharedDevice;
@@ -42,6 +43,7 @@ import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.EnumSet;
+import java.util.Enumeration;
 import java.util.List;
 
 import de.buttercookie.simbadroid.util.FileUtils;
@@ -192,4 +194,16 @@ public class JLANFileServerConfiguration extends ServerConfiguration {
         filesysConfig.addShare(diskDev);
     }
 
+    void removeTrashcanFolders() {
+        final FilesystemsConfigSection filesysConfig =
+                (FilesystemsConfigSection) getConfigSection(FilesystemsConfigSection.SectionName);
+
+        Enumeration<SharedDevice> shares = filesysConfig.getShares().enumerateShares();
+        while (shares.hasMoreElements()) {
+            SharedDevice share = shares.nextElement();
+            if (share.getContext() instanceof SimbaDiskDeviceContext diskContext) {
+                diskContext.removeTrashcanFolderIfEmpty();
+            }
+        }
+    }
 }

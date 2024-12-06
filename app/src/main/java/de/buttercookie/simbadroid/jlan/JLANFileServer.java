@@ -12,6 +12,8 @@ import org.filesys.server.NetworkServer;
 import org.filesys.server.config.InvalidConfigurationException;
 import org.filesys.smb.server.SMBServer;
 
+import de.buttercookie.simbadroid.util.ThreadUtils;
+
 public class JLANFileServer {
     private final JLANFileServerConfiguration mCfg;
     private boolean mStarted = false;
@@ -49,6 +51,7 @@ public class JLANFileServer {
             server.shutdownServer(false);
         }
         mCfg.removeAllServers();
+        ThreadUtils.postToBackgroundThread(this::removeTrashcanFolders);
         mStarted = false;
     }
 
@@ -62,5 +65,9 @@ public class JLANFileServer {
         } catch (InvalidConfigurationException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void removeTrashcanFolders() {
+        mCfg.removeTrashcanFolders();
     }
 }

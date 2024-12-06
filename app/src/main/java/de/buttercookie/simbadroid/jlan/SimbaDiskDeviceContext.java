@@ -7,6 +7,7 @@ package de.buttercookie.simbadroid.jlan;
 import android.system.ErrnoException;
 import android.system.Os;
 import android.system.StructStat;
+import android.util.Log;
 
 import org.filesys.server.core.DeviceContextException;
 import org.filesys.smb.server.disk.JavaNIODeviceContext;
@@ -15,6 +16,7 @@ import org.springframework.extensions.config.ConfigElement;
 import java.io.File;
 
 public class SimbaDiskDeviceContext extends JavaNIODeviceContext {
+    private static final String LOGTAG = "SimbaDiskDeviceContext";
 
     public SimbaDiskDeviceContext(String name, ConfigElement args) throws DeviceContextException {
         super(name, args);
@@ -31,5 +33,13 @@ public class SimbaDiskDeviceContext extends JavaNIODeviceContext {
             result = false;
         }
         return result;
+    }
+
+    public void removeTrashcanFolderIfEmpty() {
+        if (hasTrashFolder()) {
+            if (!getTrashFolder().delete()) {
+                Log.d(LOGTAG, "Couldn't delete trashcan folder - maybe not empty?");
+            }
+        }
     }
 }
