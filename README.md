@@ -41,8 +41,8 @@ _JFileServer_ is used under the LGPL-3.0 license (see lgpl-3.0.md and gpl-3.0.md
 SimbaDroid utilises a [forked version](https://github.com/buttercookie42/jfileserver) with some
 additional fixes.
 
-_libsu_, _Apache Commons Lang_ and the _Android Support Library_ are used under the Apache License,
-Version 2.0
+_libsu_, _Apache Commons Lang_, _Guava_ and the _Android Support Library_ are used under the Apache
+License, Version 2.0
 
 _Bouncy Castle_ is used under the following license:
 

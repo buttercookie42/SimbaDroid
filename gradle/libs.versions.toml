@@ -13,6 +13,7 @@ jfileserver = "cfc54ca"
 bouncycastle = "1.79"
 corelibdesugar = "2.1.3"
 apacheCommonsLang = "3.17.0"
+guava = "33.3.1-android"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -29,6 +30,7 @@ jfileserver = { group = "com.github.buttercookie42", name = "jfileserver", versi
 bouncycastle-bcprov = { group = "org.bouncycastle", name = "bcprov-jdk15to18", version.ref = "bouncycastle" }
 corelibdesugar = { group = "com.android.tools", name = "desugar_jdk_libs_nio", version.ref = "corelibdesugar" }
 apache-commons-lang = { group = "org.apache.commons", name = "commons-lang3", version.ref = "apacheCommonsLang" }
+guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

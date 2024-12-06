@@ -7,6 +7,8 @@ package de.buttercookie.simbadroid.jlan;
 import android.content.Context;
 import android.net.LinkAddress;
 
+import com.google.common.util.concurrent.Monitor;
+
 import org.filesys.netbios.server.NetBIOSNameServer;
 import org.filesys.server.NetworkServer;
 import org.filesys.server.config.InvalidConfigurationException;
@@ -17,6 +19,7 @@ import de.buttercookie.simbadroid.util.ThreadUtils;
 public class JLANFileServer {
     private final JLANFileServerConfiguration mCfg;
     private boolean mStarted = false;
+    private final Monitor startupMonitor = new Monitor();
 
     public JLANFileServer(Context context, String hostName) throws Exception {
         mCfg = new JLANFileServerConfiguration(context, hostName);
@@ -24,22 +27,27 @@ public class JLANFileServer {
 
     public void start() {
         ThreadUtils.assertOnUiThread();
-        if (mStarted) {
-            return;
-        }
-
+        startupMonitor.enter();
         try {
-            mCfg.addServer(new NetBIOSNameServer(mCfg));
-            mCfg.addServer(new SMBServer(mCfg));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+            if (mStarted) {
+                return;
+            }
 
-        for (int i = 0; i < mCfg.numberOfServers(); i++) {
-            NetworkServer server = mCfg.getServer(i);
-            server.startServer();
+            try {
+                mCfg.addServer(new NetBIOSNameServer(mCfg));
+                mCfg.addServer(new SMBServer(mCfg));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            for (int i = 0; i < mCfg.numberOfServers(); i++) {
+                NetworkServer server = mCfg.getServer(i);
+                server.startServer();
+            }
+            mStarted = true;
+        } finally {
+            startupMonitor.leave();
         }
-        mStarted = true;
     }
 
     public void stop() {
@@ -53,7 +61,7 @@ public class JLANFileServer {
             server.shutdownServer(false);
         }
         mCfg.removeAllServers();
-        ThreadUtils.postToBackgroundThread(this::removeTrashcanFolders);
+        ThreadUtils.postToBackgroundThread(this::tryRemoveTrashcanFolders);
         mStarted = false;
     }
 
@@ -69,7 +77,17 @@ public class JLANFileServer {
         }
     }
 
-    private void removeTrashcanFolders() {
-        mCfg.removeTrashcanFolders();
+    private void tryRemoveTrashcanFolders() {
+        // If the server is already starting up again, there's no point in trying to remove the
+        // trashcan folders.
+        if (startupMonitor.tryEnter()) {
+            try {
+                if (!mStarted) {
+                    mCfg.removeTrashcanFolders();
+                }
+            } finally {
+                startupMonitor.leave();
+            }
+        }
     }
 }
