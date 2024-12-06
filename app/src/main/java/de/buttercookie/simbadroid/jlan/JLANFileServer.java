@@ -23,6 +23,7 @@ public class JLANFileServer {
     }
 
     public void start() {
+        ThreadUtils.assertOnUiThread();
         if (mStarted) {
             return;
         }
@@ -42,6 +43,7 @@ public class JLANFileServer {
     }
 
     public void stop() {
+        ThreadUtils.assertOnUiThread();
         if (!mStarted) {
             return;
         }

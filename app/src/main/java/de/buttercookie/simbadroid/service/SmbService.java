@@ -186,6 +186,7 @@ public class SmbService extends Service {
     }
 
     private void updateServerState() {
+        ThreadUtils.assertOnUiThread();
         updateUI();
         if (isWifiAvailable()) {
             stopWifiTimeout();
@@ -263,15 +264,16 @@ public class SmbService extends Service {
                         var sortedAddresses = props.getLinkAddresses().stream()
                                 .filter(address -> address.getAddress() instanceof Inet4Address)
                                 .sorted(new IpSort.LinkAddressComparator(false));
-                        setLinkAddress(sortedAddresses.findFirst().orElse(null));
+                        ThreadUtils.postToUiThread(() ->
+                                setLinkAddress(sortedAddresses.findFirst().orElse(null)));
                     } else {
-                        setLinkAddress(null);
+                        ThreadUtils.postToUiThread(() -> setLinkAddress(null));
                     }
                 }
 
                 @Override
                 public void onLost(@NonNull Network network) {
-                    setLinkAddress(null);
+                    ThreadUtils.postToUiThread(() -> setLinkAddress(null));
                     connMgr.bindProcessToNetwork(null);
                 }
             };
