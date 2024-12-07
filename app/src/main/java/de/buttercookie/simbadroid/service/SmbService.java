@@ -80,7 +80,7 @@ public class SmbService extends Service {
     private long mWifiTimeoutMs = WIFI_UNAVAILABLE_STARTUP_TIMEOUT_MS;
 
     private NsdManager.RegistrationListener mNsdRegistrationListener;
-    private String mMdnsAddress;
+    private String mMDNSHostname;
     private final int INITIAL_SERVICE_NAME_SUFFIX = 1;
     private int mServiceNameSuffix = INITIAL_SERVICE_NAME_SUFFIX;
 
@@ -103,6 +103,10 @@ public class SmbService extends Service {
             }
             updateServerState();
         }
+    }
+
+    private void setMDNSHostname(String hostname) {
+        mMDNSHostname = hostname;
     }
 
     @Override
@@ -320,7 +324,7 @@ public class SmbService extends Service {
                             registerNsdService();
                         });
                     } else {
-                        mMdnsAddress = getMdnsAddress(serviceInfo);
+                        setMDNSHostname(serviceName);
                         updateUI();
                     }
                 }
@@ -332,7 +336,7 @@ public class SmbService extends Service {
 
                 @Override
                 public void onServiceUnregistered(NsdServiceInfo serviceInfo) {
-                    mMdnsAddress = null;
+                    setMDNSHostname(null);
                     updateUI();
                 }
 
@@ -365,8 +369,8 @@ public class SmbService extends Service {
         return sb.toString();
     }
 
-    private String getMdnsAddress(NsdServiceInfo serviceInfo) {
-        return UNC_PREFIX + serviceInfo.getServiceName() + MDNS_SUFFIX;
+    private String getUNCFormattedMDNSAddress() {
+        return mMDNSHostname != null ? UNC_PREFIX + mMDNSHostname + MDNS_SUFFIX : null;
     }
 
     private void createNotificationChannel() {
@@ -458,7 +462,7 @@ public class SmbService extends Service {
                 UNC_PREFIX + mLinkAddress.getAddress().getHostAddress() : "";
 
         Status status = new Status(mRunning, serviceStarted,
-                mMdnsAddress, netBiosAddress, textualIp);
+                getUNCFormattedMDNSAddress(), netBiosAddress, textualIp);
 
         var liveData = SmbServiceStatusLiveData.get();
         if (!status.equals(liveData.getValue())) {
