@@ -102,6 +102,9 @@ dependencies {
     }
     implementation(libs.bouncycastle.bcprov)
 
+    implementation(libs.jmdns)
+    implementation(libs.slf4j.provider)
+
     implementation(libs.apache.commons.lang)
     implementation(libs.guava)
 }

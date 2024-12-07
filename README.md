@@ -41,8 +41,32 @@ _JFileServer_ is used under the LGPL-3.0 license (see lgpl-3.0.md and gpl-3.0.md
 SimbaDroid utilises a [forked version](https://github.com/buttercookie42/jfileserver) with some
 additional fixes.
 
-_libsu_, _Apache Commons Lang_, _Guava_ and the _Android Support Library_ are used under the Apache
-License, Version 2.0
+_libsu_, _JmDNS_, _Apache Commons Lang_, _Guava_ and the _Android Support Library_ are used under
+the Apache License, Version 2.0
+
+_SLF4J_ is used under the **MIT license**:
+
+Copyright (c) 2004-2022 QOS.ch Sarl (Switzerland)
+All rights reserved.
+
+Permission is hereby granted, free  of charge, to any person obtaining
+a  copy  of this  software  and  associated  documentation files  (the
+"Software"), to  deal in  the Software without  restriction, including
+without limitation  the rights to  use, copy, modify,  merge, publish,
+distribute,  sublicense, and/or sell  copies of  the Software,  and to
+permit persons to whom the Software  is furnished to do so, subject to
+the following conditions:
+
+The  above  copyright  notice  and  this permission  notice  shall  be
+included in all copies or substantial portions of the Software.
+
+THE  SOFTWARE IS  PROVIDED  "AS  IS", WITHOUT  WARRANTY  OF ANY  KIND,
+EXPRESS OR  IMPLIED, INCLUDING  BUT NOT LIMITED  TO THE  WARRANTIES OF
+MERCHANTABILITY,    FITNESS    FOR    A   PARTICULAR    PURPOSE    AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE,  ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 _Bouncy Castle_ is used under the following license:
 
@@ -66,6 +90,20 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ### Notices
+#### JmDNS
+
+Java Multicast Domain Name Server (JmDNS)
+
+This project was originally developed by Arthur van Hoff under the GNU
+Lesser General Public License as jRendevous.  It was moved to Sourceforge
+by Rick Blair and renamed to JmDNS with the Arthur's kind permission.
+It has been re-released under the Apache License, Version 2.0.
+In 2014, it has been moved from Sourceforge to Github by Kai Kreuzer
+with the kind approval from Arthur and Rick.
+
+Details of the Apache License, Version 2.0 can be found at:
+http://www.apache.org/licenses/
+
 #### Apache Commons Lang
 
 Apache Commons Lang

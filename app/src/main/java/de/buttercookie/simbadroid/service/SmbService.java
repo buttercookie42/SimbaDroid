@@ -41,6 +41,7 @@ import androidx.core.app.ServiceCompat;
 import org.filesys.smb.TcpipSMB;
 
 import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.util.Objects;
 
 import de.buttercookie.simbadroid.MainActivity;
@@ -107,6 +108,8 @@ public class SmbService extends Service {
 
     private void setMDNSHostname(String hostname) {
         mMDNSHostname = hostname;
+        InetAddress addr = mLinkAddress != null ? mLinkAddress.getAddress() : null;
+        HostnameBroadcaster.setHostname(addr, hostname);
     }
 
     @Override
