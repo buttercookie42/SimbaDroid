@@ -81,6 +81,8 @@ public class SmbService extends Service {
 
     private NsdManager.RegistrationListener mNsdRegistrationListener;
     private String mMdnsAddress;
+    private final int INITIAL_SERVICE_NAME_SUFFIX = 1;
+    private int mServiceNameSuffix = INITIAL_SERVICE_NAME_SUFFIX;
 
     public record Status(boolean serviceRunning, boolean serverRunning, String mdnsAddress,
                          String netBiosAddress, String ipAddress) {
@@ -297,18 +299,30 @@ public class SmbService extends Service {
 
     private void registerNsdService() {
         if (mNsdRegistrationListener == null) {
+            final String serviceName = getNsdServiceName(mServiceNameSuffix);
+
             NsdServiceInfo serviceInfo = new NsdServiceInfo();
-            serviceInfo.setServiceName(getString(R.string.dns_name));
+            serviceInfo.setServiceName(serviceName);
             serviceInfo.setServiceType("_microsoft-ds._tcp.");
             serviceInfo.setPort(TcpipSMB.PORT);
 
             mNsdRegistrationListener = new NsdManager.RegistrationListener() {
                 @Override
                 public void onServiceRegistered(NsdServiceInfo serviceInfo) {
-                    /* TODO: Try and handle name collisions, because the default alternative names
-                        chosen (with e.g. a " (2)" suffix) aren't necessarily plain-DNS-friendly. */
-                    mMdnsAddress = getMdnsAddress(serviceInfo);
-                    updateUI();
+                    // Android auto-increments the service name on detecting a collision, but it
+                    // does so by appending a " (<digit>)" suffix (i.e. including a space) to the
+                    // service name, making the resulting name not plain-DNS-friendly.
+                    if (!serviceName.equals(serviceInfo.getServiceName())) {
+                        // We couldn't get our preferred service name, so try again with a suffix
+                        ThreadUtils.postToUiThread(() -> {
+                            mServiceNameSuffix++;
+                            unregisterNsdService();
+                            registerNsdService();
+                        });
+                    } else {
+                        mMdnsAddress = getMdnsAddress(serviceInfo);
+                        updateUI();
+                    }
                 }
 
                 @Override
@@ -340,6 +354,15 @@ public class SmbService extends Service {
             nsdManager.unregisterService(mNsdRegistrationListener);
             mNsdRegistrationListener = null;
         }
+    }
+
+    private String getNsdServiceName(int suffix) {
+        StringBuilder sb = new StringBuilder(getString(R.string.dns_name));
+        if (mServiceNameSuffix > INITIAL_SERVICE_NAME_SUFFIX) {
+            sb.append("-");
+            sb.append(suffix);
+        }
+        return sb.toString();
     }
 
     private String getMdnsAddress(NsdServiceInfo serviceInfo) {
