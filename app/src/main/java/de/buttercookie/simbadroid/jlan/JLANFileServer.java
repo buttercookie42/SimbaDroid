@@ -13,8 +13,8 @@ import org.filesys.server.config.InvalidConfigurationException;
 import org.filesys.smb.server.SMBServer;
 
 public class JLANFileServer {
-    JLANFileServerConfiguration mCfg;
-    boolean mStarted = false;
+    private final JLANFileServerConfiguration mCfg;
+    private boolean mStarted = false;
 
     public JLANFileServer(Context context, String hostName) throws Exception {
         mCfg = new JLANFileServerConfiguration(context, hostName);
