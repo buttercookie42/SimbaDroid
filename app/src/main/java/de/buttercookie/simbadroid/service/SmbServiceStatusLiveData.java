@@ -18,6 +18,6 @@ public class SmbServiceStatusLiveData extends MutableLiveData<SmbService.Status>
         return sInstance;
     }
 
-    private SmbServiceStatusLiveData() {};
+    private SmbServiceStatusLiveData() {}
 
 }

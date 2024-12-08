@@ -27,7 +27,7 @@ android {
     }
 
     androidResources {
-        generateLocaleConfig = true;
+        generateLocaleConfig = true
     }
 
     buildFeatures {
