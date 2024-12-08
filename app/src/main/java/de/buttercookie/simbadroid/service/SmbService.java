@@ -334,7 +334,8 @@ public class SmbService extends Service {
 
                 @Override
                 public void onRegistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
-
+                    setMDNSHostname(null);
+                    updateUI();
                 }
 
                 @Override
@@ -345,7 +346,8 @@ public class SmbService extends Service {
 
                 @Override
                 public void onUnregistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
-
+                    setMDNSHostname(null);
+                    updateUI();
                 }
             };
 
