@@ -1,0 +1,3 @@
+* Display the server's address in the UI for easier connecting to your file shares
+* Advertise a friendly hostname via mDNS and NetBIOS
+* Remove JFileServer's trashcan directory again from your phone's file system when stopping the SMB server
