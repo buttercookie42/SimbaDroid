@@ -1,0 +1,1 @@
+Replace dual start/stop server buttons with a single toggle button
