@@ -22,13 +22,19 @@
             android:id="@+id/start_service"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_start_server" />
+            android:text="@string/button_start_server"
+            app:icon="@drawable/ic_start"
+            app:iconPadding="6dp"
+            app:iconSize="24dp" />
 
         <Button
             android:id="@+id/stop_service"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_stop_server" />
+            android:text="@string/button_stop_server"
+            app:icon="@drawable/ic_stop"
+            app:iconPadding="6dp"
+            app:iconSize="24dp" />
     </LinearLayout>
 
     <TextView
