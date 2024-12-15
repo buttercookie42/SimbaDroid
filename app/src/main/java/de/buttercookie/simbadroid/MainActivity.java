@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -73,20 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         SmbServiceStatusLiveData.get().observe(this, status -> {
             updateButtonState(status);
-            if (!status.serviceRunning()) {
-                binding.serviceStatus.setText(R.string.status_server_off);
-            } else if (!status.serverRunning()) {
-                binding.serviceStatus.setText(R.string.message_server_waiting_wifi);
-            } else if (StringUtils.isBlank(status.mdnsAddress()) ||
-                    StringUtils.isBlank(status.ipAddress())) {
-                binding.serviceStatus.setText(R.string.message_server_running);
-            } else {
-                binding.serviceStatus.setText(getStyledText(this,
-                        R.string.status_server_running,
-                        status.mdnsAddress(),
-                        status.netBiosAddress(),
-                        status.ipAddress()));
-            }
+            updateStatusText(status);
         });
     }
 
@@ -117,6 +105,25 @@ public class MainActivity extends AppCompatActivity {
             button.setText(R.string.button_start_server);
             button.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_start));
             button.setEnabled(mBound && mService.isWifiAvailable());
+        }
+    }
+
+    private void updateStatusText(SmbService.Status status) {
+        final TextView statusText = binding.serviceStatus;
+
+        if (!status.serviceRunning()) {
+            statusText.setText(R.string.status_server_off);
+        } else if (!status.serverRunning()) {
+            statusText.setText(R.string.message_server_waiting_wifi);
+        } else if (StringUtils.isBlank(status.mdnsAddress()) ||
+                StringUtils.isBlank(status.ipAddress())) {
+            statusText.setText(R.string.message_server_running);
+        } else {
+            statusText.setText(getStyledText(this,
+                    R.string.status_server_running,
+                    status.mdnsAddress(),
+                    status.netBiosAddress(),
+                    status.ipAddress()));
         }
     }
 
