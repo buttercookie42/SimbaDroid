@@ -56,12 +56,14 @@ public class Iptables {
         return cmd;
     }
 
-    public static void iptables(boolean isIPv6, String table, String operation, String rule) {
+    public static boolean iptables(boolean isIPv6, String table, String operation, String rule) {
         String command = isIPv6 ? "ip6tables" : "iptables";
         boolean exists = Shell.cmd(command + " " + waitCmd() + "-t " + table + " -C " + rule).exec().isSuccess();
+        boolean success = true;
         if ((!exists && (operation.equals("N") || operation.equals("I") || operation.equals("A"))) ||
                 (exists && (operation.equals("D") || operation.equals("F") || operation.equals("X")))) {
-            shellCommand(command + " " + waitCmd() + "-t " + table + " -" + operation + " " + rule);
+            success = shellCommand(command + " " + waitCmd() + "-t " + table + " -" + operation + " " + rule);
         }
+        return success;
     }
 }
