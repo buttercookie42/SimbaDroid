@@ -9,6 +9,7 @@ import static de.buttercookie.simbadroid.util.StyledTextUtils.getStyledText;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.widget.Toast;
@@ -60,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.toggleService.setOnClickListener(v -> toggleSmbService());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            binding.toggleService.setAllowClickWhenDisabled(true);
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -108,9 +112,11 @@ public class MainActivity extends AppCompatActivity {
         if (status.serviceRunning()) {
             button.setText(R.string.button_stop_server);
             button.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_stop));
+            button.setEnabled(true);
         } else {
             button.setText(R.string.button_start_server);
             button.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_start));
+            button.setEnabled(mBound && mService.isWifiAvailable());
         }
     }
 
