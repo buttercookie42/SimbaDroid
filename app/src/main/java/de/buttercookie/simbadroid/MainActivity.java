@@ -11,16 +11,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.google.android.material.button.MaterialButton;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -30,7 +32,7 @@ import de.buttercookie.simbadroid.service.SmbService;
 import de.buttercookie.simbadroid.service.SmbServiceConnection;
 import de.buttercookie.simbadroid.service.SmbServiceStatusLiveData;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
 
     private SmbService mService;
@@ -57,8 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        binding.startService.setOnClickListener(this);
-        binding.stopService.setOnClickListener(this);
+        binding.toggleService.setOnClickListener(v -> toggleSmbService());
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         SmbServiceStatusLiveData.get().observe(this, status -> {
+            updateButtonState(status);
             if (!status.serviceRunning()) {
                 binding.serviceStatus.setText(R.string.status_server_off);
             } else if (!status.serverRunning()) {
@@ -100,7 +102,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBound = false;
     }
 
-    private void startSmbService() {
+    private void updateButtonState(SmbService.Status status) {
+        final MaterialButton button = binding.toggleService;
+
+        if (status.serviceRunning()) {
+            button.setText(R.string.button_stop_server);
+            button.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_stop));
+        } else {
+            button.setText(R.string.button_start_server);
+            button.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_start));
+        }
+    }
+
+    private void toggleSmbService() {
         if (!mBound) {
             Toast.makeText(this,
                     R.string.toast_error_starting_server,
@@ -108,6 +122,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
+        if (!mService.isRunning()) {
+            startSmbService();
+        } else {
+            stopSmbService();
+        }
+    }
+
+    private void startSmbService() {
         if (!mService.isWifiAvailable()) {
             Toast.makeText(this,
                     R.string.toast_error_no_wifi,
@@ -119,18 +141,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void stopSmbService() {
-        if (mBound) {
-            mService.stop();
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v == binding.startService) {
-            startSmbService();
-        } else if (v == binding.stopService) {
-            stopSmbService();
-        }
+        mService.stop();
     }
 
     @Override

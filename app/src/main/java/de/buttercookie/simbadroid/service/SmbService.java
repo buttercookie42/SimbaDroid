@@ -190,6 +190,10 @@ public class SmbService extends Service {
         super.onDestroy();
     }
 
+    public boolean isRunning() {
+        return mRunning;
+    }
+
     public boolean isWifiAvailable() {
         return mLinkAddress != null;
     }
