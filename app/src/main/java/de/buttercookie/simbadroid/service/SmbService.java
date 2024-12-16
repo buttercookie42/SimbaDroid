@@ -465,12 +465,12 @@ public class SmbService extends Service {
     }
 
     private void updateUI() {
-        boolean serviceStarted = mServer != null && mServer.running();
+        boolean serverStarted = mServer != null && mServer.running();
         String netBiosAddress = UNC_PREFIX + getString(R.string.dns_name);
         String textualIp = mLinkAddress != null ?
                 UNC_PREFIX + mLinkAddress.getAddress().getHostAddress() : "";
 
-        Status status = new Status(mRunning, serviceStarted,
+        Status status = new Status(mRunning, serverStarted,
                 getUNCFormattedMDNSAddress(), netBiosAddress, textualIp);
 
         var liveData = SmbServiceStatusLiveData.get();
