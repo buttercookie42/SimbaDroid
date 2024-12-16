@@ -7,7 +7,5 @@ plugins {
 allprojects {
     tasks.withType<JavaCompile>().configureEach {
         options.compilerArgs.add("-Xlint:deprecation")
-        // Don't warn about Java 8 deprecation for now
-        options.compilerArgs.add("-Xlint:-options")
     }
 }
