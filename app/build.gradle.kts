@@ -43,6 +43,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // This doesn't support Mercurial right now and also only causes confusion with F-Droid
+            // reproducible builds, which will build from the Github repository.
+            vcsInfo.include = false
         }
     }
     packaging {
