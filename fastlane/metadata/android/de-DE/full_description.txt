@@ -1,6 +1,6 @@
 SimbaDroid ist ein SMB-Server für Android, der es ermöglicht, über WLAN auf die Inhalte deines Telefons zuzugreifen (sowohl den internen Speicher, als auch eine SD-Karte).
 
-Auf Grund von technischen Beschränkungen von Android benötigt diese App Root-Zugriff (wie auf allen unixoiden Betreibssytemen können Nutzerapps keine Netzwerkports < 1024 öffnen, während der Standardport für SMB wiederum 445 ist und Windows in der Hinsicht auch nicht umkonfiguriert werden kann). Ohne Root-Zugriff benötigst du entweder einen alternativen SMB-Clienten mit einer Einstellmöglichkeit für den Zielport (SimbaDroid benutzt Port 4450), oder irgend eine Art von Portmapper-Software um Windows dadurch transparent von Port 445 auf 4450 umzuleiten.
+Auf Grund von technischen Beschränkungen von Android benötigt diese App Root-Zugriff (wie auf allen unixoiden Betreibssytemen können Nutzerapps keine Netzwerkports < 1024 öffnen, während der Standardport für SMB wiederum 445 ist und Windows in der Hinsicht auch nicht umkonfiguriert werden kann). Ohne Root-Zugriff benötigst du entweder einen alternativen SMB-Clienten mit einer Einstellmöglichkeit für den Zielport (SimbaDroid benutzt Port 4450 im Hintergrund), oder irgend eine Art von Portmapper-Software um Windows dadurch transparent von Port 445 auf 4450 umzuleiten.
 
 Auf Grund von Einschränkungen von JFileServer wird nur SMBv1 unterstützt, was für moderne Windowssysteme auch nicht ideal ist, aber c'est la vie…
 
