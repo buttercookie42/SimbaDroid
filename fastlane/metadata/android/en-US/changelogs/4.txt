@@ -1,0 +1,2 @@
+* Fix spurious "Waiting for Wifi connection…" notification
+* Show correct button state if Wifi isn't available on startup
