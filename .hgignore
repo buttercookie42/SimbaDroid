@@ -103,6 +103,7 @@ gen-external-apklibs
 \.idea/jarRepositories\.xml
 \.idea/navEditor\.xml
 \.idea/runConfigurations\.xml
+\.idea/markdown\.xml
 
 # Legacy Eclipse project files
 \.classpath
