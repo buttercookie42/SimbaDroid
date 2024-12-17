@@ -221,7 +221,7 @@ public class SmbService extends Service {
         } else {
             Log.d(LOGTAG, "Stopping SMB server");
             mServer.stop();
-            if (!isWifiAvailable()) {
+            if (mRunning && !isWifiAvailable()) {
                 getSystemService(NotificationManager.class)
                         .notify(NOTIFICATION_ID, getServiceNotification());
             }
