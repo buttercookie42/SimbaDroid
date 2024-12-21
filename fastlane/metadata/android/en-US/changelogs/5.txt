@@ -1,0 +1,1 @@
+- Fix crash on Android 6 when shutting down the SMB server while files are open on the file share
