@@ -82,7 +82,7 @@ public class SmbService extends Service {
 
     private NsdManager.RegistrationListener mNsdRegistrationListener;
     private String mMDNSHostname;
-    private final int INITIAL_SERVICE_NAME_SUFFIX = 1;
+    private static final int INITIAL_SERVICE_NAME_SUFFIX = 1;
     private int mServiceNameSuffix = INITIAL_SERVICE_NAME_SUFFIX;
 
     public record Status(boolean serviceRunning, boolean serverRunning, String mdnsAddress,
