@@ -130,7 +130,10 @@ public class JLANFileServerConfiguration extends ServerConfiguration {
         smbConfig.setHostAnnounceDebug(false);
         smbConfig.setSessionDebugFlags(EnumSet.noneOf(SMBSrvSession.Dbg.class));
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            // Core lib desugaring is missing some bits in the network code
             smbConfig.setDisableNIOCode(true);
+            // Core lib desugaring doesn't handle HashMap's new KeySetView usage.
+            smbConfig.setDisableHashedOpenFileMap(true);
         }
     }
 
