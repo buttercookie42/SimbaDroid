@@ -4,6 +4,6 @@ Auf Grund von technischen Beschränkungen von Android benötigt diese App Root-Z
 
 Auf Grund von Einschränkungen von JFileServer wird nur SMBv1 unterstützt, was für moderne Windowssysteme auch nicht ideal ist, aber c'est la vie…
 
-Da die App hauptsächlich für meinen Eigengebraucht gedacht ist, gibt es momentan keinerlei Konfigurationsmöglichkeiten – Netzwerkfreigaben für den internen Speicher und die externe SD-Karte (falls vorhanden) werden automatisch angelegt, und sind ohne Authentifizierung zugänglich. Sei daher mit der Nutzung dieser App in öffentlichen Netzwerken vorsichtig. Eventuell werde ich in der Zukunft noch Einstellungsmöglichkeiten für die Netzwerkfreigaben und Benutzerauthentifizierung ergänzen, kann dafür aber keinerlei Zeitrahmen versprechen.
+Da die App hauptsächlich für meinen Eigengebrauch gedacht ist, gibt es momentan keinerlei Konfigurationsmöglichkeiten – Netzwerkfreigaben für den internen Speicher und die externe SD-Karte (falls vorhanden) werden automatisch angelegt, und sind ohne Authentifizierung zugänglich. Sei daher mit der Nutzung dieser App in öffentlichen Netzwerken vorsichtig. Eventuell werde ich in der Zukunft noch Einstellungsmöglichkeiten für die Netzwerkfreigaben und Benutzerauthentifizierung ergänzen, kann dafür aber keinerlei Zeitrahmen versprechen.
 
 READ/WRITE/MANAGE_EXTERNAL_STORAGE wird für den Zugriff auf das Dateisystem benötigt.

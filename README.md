@@ -7,7 +7,10 @@ internal storage or an external SD card) from your computer via wi-fi.
 
 ## Download
 
-<a href="https://apt.izzysoft.de/fdroid/index/apk/de.buttercookie.simbadroid">
+<a href="https://f-droid.org/packages/de.buttercookie.simbadroid">
+<img src="https://f-droid.org/badge/get-it-on.png" width="230">
+</a><br>
+&nbsp;&nbsp;&nbsp; <a href="https://apt.izzysoft.de/fdroid/index/apk/de.buttercookie.simbadroid">
 <img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroidButton.png" width="200">
 </a>
 

@@ -1,1 +1,1 @@
-Ein einfacher SMB-Dateiserver (benötigt Root)
+Ein einfacher SMB-Dateiserver (benÃ¶tigt Root)
