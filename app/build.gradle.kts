@@ -23,7 +23,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        resourceConfigurations += listOf("en", "de")
+        resourceConfigurations += listOf("en", "de", "it")
     }
 
     androidResources {
