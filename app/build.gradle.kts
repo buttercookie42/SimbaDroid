@@ -22,12 +22,11 @@ android {
         base.archivesName = "$applicationId-$versionName"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        resourceConfigurations += listOf("en", "de")
     }
 
     androidResources {
         generateLocaleConfig = true
+        localeFilters += listOf("en", "de")
     }
 
     buildFeatures {
