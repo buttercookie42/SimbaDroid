@@ -79,6 +79,7 @@ obj/
 .idea/shelf/
 .idea/workspace.xml
 .idea/tasks.xml
+.idea/AndroidProjectSystem.xml
 .idea/deploymentTargetDropDown.xml
 .idea/deploymentTargetSelector.xml
 .idea/.name
