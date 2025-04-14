@@ -11,7 +11,7 @@ externalProperties {
 
 android {
     namespace = "de.buttercookie.simbadroid"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "de.buttercookie.simbadroid"
