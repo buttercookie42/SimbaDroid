@@ -293,7 +293,9 @@ public class SmbService extends Service {
             };
             connMgr.requestNetwork(
                     new NetworkRequest.Builder()
-                            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI).build(),
+                            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                            .addTransportType(NetworkCapabilities.TRANSPORT_ETHERNET)
+                            .build(),
                     mNetCallback
             );
         }
