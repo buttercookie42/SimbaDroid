@@ -17,8 +17,8 @@ android {
         applicationId = "de.buttercookie.simbadroid"
         minSdk = 23
         targetSdk = 34
-        versionCode = 7
-        versionName = "0.6a1"
+        versionCode = 8
+        versionName = "0.6"
         base.archivesName = "$applicationId-$versionName"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

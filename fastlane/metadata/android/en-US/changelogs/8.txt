@@ -1,0 +1,2 @@
+- Support Ethernet network connections
+- Performance improvement creating files in large directories 
