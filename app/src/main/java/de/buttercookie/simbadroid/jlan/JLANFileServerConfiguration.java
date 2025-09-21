@@ -94,12 +94,12 @@ public class JLANFileServerConfiguration extends ServerConfiguration {
         if (sdCard != null) {
             addShare(diskInterface, this, filesysConfig, secConfig,
                     "External", sdCard.getAbsolutePath(),
-                    FileUtils.getTrashcanPath(context, sdCard).getAbsolutePath());
+                    FileUtils.getTrashcanPath(context, sdCard).getAbsolutePath(), true);
         }
         File internal = Environment.getExternalStorageDirectory();
         addShare(diskInterface, this, filesysConfig, secConfig,
                 "Internal", internal.getAbsolutePath(),
-                FileUtils.getTrashcanPath(context, internal).getAbsolutePath());
+                FileUtils.getTrashcanPath(context, internal).getAbsolutePath(), true);
 
         // SMB
         SMBConfigSection smbConfig = new SMBConfigSection(this);
@@ -173,7 +173,8 @@ public class JLANFileServerConfiguration extends ServerConfiguration {
                                  ServerConfiguration serverConfig,
                                  FilesystemsConfigSection filesysConfig,
                                  SecurityConfigSection secConfig,
-                                 String shareName, String sharePath, @Nullable String trashcanPath)
+                                 String shareName, String sharePath, @Nullable String trashcanPath,
+                                 boolean caseInsensitive)
             throws DeviceContextException {
         final GenericConfigElement driverConfig = new GenericConfigElement("driver");
         final GenericConfigElement localPathConfig = new GenericConfigElement("LocalPath");
@@ -184,6 +185,9 @@ public class JLANFileServerConfiguration extends ServerConfiguration {
                     new GenericConfigElement("TrashcanPath");
             trashcanPathConfig.setValue(trashcanPath);
             driverConfig.addChild(trashcanPathConfig);
+        }
+        if (caseInsensitive) {
+            driverConfig.addChild(new GenericConfigElement("DiskIsCaseInsensitive"));
         }
         DiskDeviceContext diskDeviceContext =
                 (DiskDeviceContext) diskInterface.createContext(shareName, driverConfig);
