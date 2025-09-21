@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             button.setText(R.string.button_start_server);
             button.setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_start));
-            button.setEnabled(mBound && mService.isWifiAvailable());
+            button.setEnabled(mBound && mService.isNetworkAvailable());
         }
     }
 
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         if (!status.serviceRunning()) {
             statusText.setText(R.string.status_server_off);
         } else if (!status.serverRunning()) {
-            statusText.setText(R.string.message_server_waiting_wifi);
+            statusText.setText(R.string.message_server_waiting_network);
         } else if (StringUtils.isBlank(status.mdnsAddress()) ||
                 StringUtils.isBlank(status.ipAddress())) {
             statusText.setText(R.string.message_server_running);
@@ -143,9 +143,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startSmbService() {
-        if (!mService.isWifiAvailable()) {
+        if (!mService.isNetworkAvailable()) {
             Toast.makeText(this,
-                    R.string.toast_error_no_wifi,
+                    R.string.toast_error_no_network,
                     Toast.LENGTH_SHORT).show();
             return;
         }
