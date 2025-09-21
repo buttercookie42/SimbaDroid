@@ -113,6 +113,7 @@ public final class ThreadUtils {
         assertOnThreadComparison(expectedThread, behavior, false);
     }
 
+    @SuppressWarnings("deprecation") //Thread.getId() replacement requires API36
     private static void assertOnThreadComparison(final Thread expectedThread,
                                                  final AssertBehavior behavior,
                                                  final boolean expected) {
@@ -156,6 +157,7 @@ public final class ThreadUtils {
         return isOnThread(sBackgroundThread);
     }
 
+    @SuppressWarnings("deprecation") // Thread.getId() replacement requires API36
     public static boolean isOnThread(final Thread thread) {
         return (Thread.currentThread().getId() == thread.getId());
     }
