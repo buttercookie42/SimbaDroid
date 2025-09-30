@@ -46,6 +46,7 @@ import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.List;
 
+import de.buttercookie.simbadroid.BuildConfig;
 import de.buttercookie.simbadroid.util.FileUtils;
 import de.buttercookie.simbadroid.util.SdCard;
 
@@ -132,7 +133,14 @@ public class JLANFileServerConfiguration extends ServerConfiguration {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             // Core lib desugaring is missing some bits in the network code
             smbConfig.setDisableNIOCode(true);
-            // Core lib desugaring doesn't handle HashMap's new KeySetView usage.
+        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || BuildConfig.FLAVOR.equals("oldApi")) {
+            // Core lib desugaring doesn't handle the Java 1.8 method signature change in
+            // ConcurrentHashMap.keySet() and native support was only introduced with API29.
+
+            // Additionally, if core lib desugaring is enabled with a minApi <= 23, it includes a
+            // copy of the Java 1.7 implementation of ConcurrentHashMap which then shadows the 1.8
+            // version even on API29+ devices, hence the need for separate build flavours.
             smbConfig.setDisableHashedOpenFileMap(true);
         }
     }

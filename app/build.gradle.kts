@@ -15,13 +15,28 @@ android {
 
     defaultConfig {
         applicationId = "de.buttercookie.simbadroid"
-        minSdk = 23
         targetSdk = 34
         versionCode = 9
         versionName = "0.7a1"
         base.archivesName = "$applicationId-$versionName"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    flavorDimensions += listOf("api")
+
+    productFlavors {
+        create("default") {
+            dimension = "api"
+            minSdk = 24
+            versionCode = (defaultConfig.versionCode ?: 0) * 10 + 2
+        }
+
+        create("oldApi") {
+            dimension = "api"
+            minSdk = 23
+            versionCode = (defaultConfig.versionCode ?: 0) * 10 + 1
+        }
     }
 
     androidResources {
