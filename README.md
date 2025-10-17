@@ -8,10 +8,10 @@ internal storage or an external SD card) from your computer via wi-fi.
 ## Download
 
 <a href="https://f-droid.org/packages/de.buttercookie.simbadroid">
-<img src="https://f-droid.org/badge/get-it-on.png" width="230">
+<img src="https://f-droid.org/badge/get-it-on.png" width="230" alt="Get it on F-Droid" >
 </a><br>
 &nbsp;&nbsp;&nbsp; <a href="https://apt.izzysoft.de/fdroid/index/apk/de.buttercookie.simbadroid">
-<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroidButton.png" width="200">
+<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroidButton.png" width="200" alt="Get it on IzzyOnDroid">
 </a>
 
 … or download it directly from the [Github Releases page](https://github.com/buttercookie42/SimbaDroid/releases).
@@ -20,18 +20,29 @@ internal storage or an external SD card) from your computer via wi-fi.
 
 Due to Android limitations, this app requires root (as on all Unixoid operating systems, it is not
 possible to open a port < 1024 otherwise, and the default SMB port is 445 and Windows doesn't work
-with anything else). Without root, you either need some sort of SMB client which allows configuring
-the port used (SimbaDroid uses port 4450 behind the scenes), or some kind of port mapping software
+with anything else) for full functionality. Without root, you either need some sort of SMB client
+which allows configuring the port used (SimbaDroid uses port 4450 behind the scenes), or some kind
+of [port mapping setup](https://serverfault.com/questions/1011395/access-smb-over-a-custom-port/1065212#1065212)
 to allow Windows to transparently connect to port 4450.
+
+Recent Windows 11 releases starting from 24H2 also allow specifying a port number when connecting to
+an SMB share from the command line, e.g PowerShell:
+```
+New-SmbMapping -LocalPath "Z:" -RemotePath "\\simbadroid.local\Internal" -TcpPort 4450
+```
+… respectively via the regular command line:
+```
+net use Z: \\simbadroid.local\Internal /TCPPORT:4450
+```
 
 Due to [JFileServer](https://github.com/FileSysOrg/jfileserver) limitations, only SMBv1 is
 supported, which isn't ideal for modern Windows, either, but c'est la vie…
 
 Since the app is mostly for my private use, at the moment there are no configuration options –
-shares for the internal storage as well as an external SD card (if one is detected) are set up
-automatically and are accessible without authentication, so be careful about using this app in
-public networks. I might add some options for configuring your own custom shares and user
-authentication eventually, but no guarantees as to if and when.
+shares for the internal storage (*"Internal"*) as well as an external SD card (*"External"* – if one
+is detected) are set up automatically and are accessible without authentication, so be careful about
+using this app in public networks. I might add some options for configuring your own custom shares
+and user authentication eventually, but no guarantees as to if and when.
 
 `READ/WRITE/MANAGE_EXTERNAL_STORAGE` is required for filesystem access.
 

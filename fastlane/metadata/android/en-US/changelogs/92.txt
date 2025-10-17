@@ -1,0 +1,2 @@
+- Fix some rare crashes relating to open file handles
+- Provide separate APK for old Android versions
