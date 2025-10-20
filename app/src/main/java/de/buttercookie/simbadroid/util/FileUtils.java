@@ -7,6 +7,7 @@ package de.buttercookie.simbadroid.util;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -14,6 +15,7 @@ import java.io.File;
 import java.util.Arrays;
 
 public class FileUtils {
+    private static final String LOGTAG = "FileUtils";
 
     private static final String TRASHCAN_FOLDER  = ".Trashcan";
 
@@ -36,6 +38,7 @@ public class FileUtils {
         target = new File(target, TRASHCAN_FOLDER);
         if (!ensureDir(target)) {
             target = null;
+            Log.w(LOGTAG, "Couldn't create trashcan folder!");
         }
         return target;
     }
