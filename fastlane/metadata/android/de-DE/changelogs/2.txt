@@ -1,0 +1,3 @@
+* Anzeige der Server-Adresse in der Benutzeroberfläche zum einfacheren Verbinden
+* Zugriff mit benutzerfreundlichem Hostnamen über mDNS und NetBIOS
+* Entferne JFileServers Papierkorbverzeichnis beim Beenden des SMB-Servers

@@ -1,0 +1,1 @@
+- Behebe Absturz unter Android 6 wenn der Server beendet wird während noch Dateien auf der Freigabe geöffnet sind

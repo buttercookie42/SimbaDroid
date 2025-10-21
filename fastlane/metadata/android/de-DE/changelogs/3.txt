@@ -1,0 +1,1 @@
+Ersetze getrennte Start-/Stopp-Knöpfe durch einen gemeinsamen Knopf

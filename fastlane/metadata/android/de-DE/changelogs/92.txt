@@ -1,0 +1,2 @@
+- Behebe seltene Abstürze im Zusammenhang mit geöffneten Dateien
+- Separate APK-Version für alte Android-Versionen

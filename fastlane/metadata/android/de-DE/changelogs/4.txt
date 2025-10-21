@@ -1,0 +1,2 @@
+* Behebe fehlerhafte "Warte auf WLAN-Verbindung…"-Benachrichtigung
+* Zeige korrekten Zustand des Startknopfes wenn beim Programmstart kein WLAN verfügbar ist

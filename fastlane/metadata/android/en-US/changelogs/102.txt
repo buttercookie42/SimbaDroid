@@ -1,0 +1,1 @@
+- Work around Android bug to preserve last modified dates when renaming files on a removable SD card
