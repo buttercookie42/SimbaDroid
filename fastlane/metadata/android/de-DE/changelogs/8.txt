@@ -1,2 +1,2 @@
 - Unterstützung für Ethernet-Netzwerkverbindungen
-- Performance improvement creating files in large directories 
+- Verbesserte Leistung beim Erstellen von neuen Dateien in großen Verzeichnissen
