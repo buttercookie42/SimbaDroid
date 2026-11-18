@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">SimbaDroid</string>
+    <!-- Only use letters, digits and hyphens, and don't use more than 15 characters if you still
+     care about NetBIOS name resolution -->
+    <string name="dns_name">simbadroid</string>
+
+    <string name="button_start_server">Iniciar servidor</string>
+    <string name="button_stop_server">Parar servidor</string>
+
+    <string name="notification_channel_name">Servidor SMB</string>
+    <string name="notification_channel_description">Notificação do serviço de servidor SMB</string>
+    <string name="message_server_running">O servidor SMB está em execução.</string>
+    <string name="message_server_waiting_network">Aguardando conexão com a rede local…</string>
+    <string name="notification_action_stop">Parar servidor</string>
+
+    <string name="toast_need_storage_permission">Permissão de armazenamento necessária</string>
+    <string name="toast_error_starting_server">Erro ao iniciar o servidor</string>
+    <string name="toast_error_no_network">Conecte-se a uma rede local para iniciar o servidor.</string>
+
+    <string name="shortcut_start_server_short">Iniciar</string>
+    <string name="shortcut_start_server_long">Iniciar servidor</string>
+
+    <string name="status_server_off">O servidor SMB não está ativo.</string>
+    <string name="status_server_running">O servidor SMB está em execução.\nPara acessar seus arquivos, acesse <b>%1$s</b>, <b>%2$s</b> ou <b>%3$s</b>.</string>
+</resources>
